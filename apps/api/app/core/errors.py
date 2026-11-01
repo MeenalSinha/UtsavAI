@@ -63,3 +63,23 @@ class PayloadTooLargeError(AppError):
 class DependencyUnavailableError(AppError):
     status_code = 503
     code = "DEPENDENCY_UNAVAILABLE"
+
+
+class AIUnavailableError(AppError):
+    status_code = 503
+    code = "AI_UNAVAILABLE"
+
+
+class AIRateLimitError(AppError):
+    status_code = 429
+    code = "RATE_LIMITED"
+
+
+class AIValidationError(AppError):
+    status_code = 422
+    code = "AI_VALIDATION_ERROR"
+
+
+class StaleProposalError(AppError):
+    status_code = 409
+    code = "STALE_PROPOSAL"

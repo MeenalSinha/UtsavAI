@@ -179,5 +179,6 @@ Totals: PASS 14, PARTIAL 5, BLOCKED 3. No criterion is marked PASS without execu
 
 ## 18. Git commit information
 
-No commit was made. The delivered ZIP contains a ready repository (`git init && git add -A && git commit`).
-Suggested message: `feat: UtsavAI Phase 1 foundation (auth, events, RLS, tests, CI)`.
+Repository initialised and pushed to GitHub: [MeenalSinha/UtsavAI](https://github.com/MeenalSinha/UtsavAI).
+Initial commit: `Initial commit: UtsavAI Phase 1 Foundation`.
+Phase 1 re-verification completed on 2026-11-01: 136 backend pytest tests passed against local PostgreSQL 16 container, 83 frontend vitest tests passed, ESLint and TypeScript clean, Next.js production build succeeded, and secret scanning verified clean.

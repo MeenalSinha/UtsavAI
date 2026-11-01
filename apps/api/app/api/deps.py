@@ -12,6 +12,7 @@ from app.core.errors import UnauthenticatedError
 from app.core.request_context import actor_id_var, request_id_var
 from app.core.security import Principal, TokenVerifier
 from app.database.pool import Database
+from app.modules.ai.provider import StructuredGenerationProvider
 from app.modules.events.service import EventService
 from app.modules.identity.service import IdentityService
 
@@ -55,5 +56,17 @@ def get_identity_service(db: DatabaseDep) -> IdentityService:
     return IdentityService(db)
 
 
+def get_ai_provider(request: Request) -> StructuredGenerationProvider:
+    if hasattr(request.app.state, "ai_provider") and request.app.state.ai_provider is not None:
+        return request.app.state.ai_provider  # type: ignore[no-any-return]
+    settings = request.app.state.settings
+    from app.modules.ai.provider import GeminiProvider
+
+    provider = GeminiProvider(settings)
+    request.app.state.ai_provider = provider
+    return provider
+
+
 EventServiceDep = Annotated[EventService, Depends(get_event_service)]
 IdentityServiceDep = Annotated[IdentityService, Depends(get_identity_service)]
+AIProviderDep = Annotated[StructuredGenerationProvider, Depends(get_ai_provider)]

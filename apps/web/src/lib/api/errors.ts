@@ -64,3 +64,9 @@ export function userMessage(error: unknown): string {
   }
   return "Something went wrong. Please try again.";
 }
+
+export function getApiErrorMessage(error: unknown, fallback: string = "Something went wrong. Please try again."): string {
+  if (error instanceof ApiError) return error.message || fallback;
+  if (error instanceof Error) return error.message || fallback;
+  return fallback;
+}

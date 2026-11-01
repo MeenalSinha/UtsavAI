@@ -77,13 +77,15 @@ describe("EventWorkspace", () => {
     expect(screen.getByRole("heading", { level: 1, name: /Aarav and Meera/ })).toBeInTheDocument();
     expect(screen.getByText("Expected guests")).toBeInTheDocument();
     const nav = screen.getByRole("navigation", { name: /event modules/i });
-    for (const name of ["PlanAI", "BudgetAI", "TimelineAI", "VendorConnect", "GiftCircle"]) {
+    for (const name of ["BudgetAI", "TimelineAI", "VendorConnect", "GiftCircle"]) {
       const item = within(nav).getByText(name).closest("span[aria-disabled]");
       expect(item).toHaveAttribute("aria-disabled", "true");
     }
-    expect(within(nav).getAllByText("Coming soon")).toHaveLength(5);
+    expect(within(nav).getAllByText("Coming soon")).toHaveLength(4);
     expect(within(nav).getByText("Overview")).toHaveAttribute("aria-current", "page");
-    expect(within(nav).queryByRole("link")).not.toBeInTheDocument();
+    expect(within(nav).getByRole("link", { name: "PlanAI" })).toBeInTheDocument();
+    expect(within(nav).getByRole("link", { name: "Preferences" })).toBeInTheDocument();
+    expect(within(nav).getByRole("link", { name: "Functions" })).toBeInTheDocument();
   });
 
   it("lets an owner edit and archive", async () => {

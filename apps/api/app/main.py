@@ -126,6 +126,7 @@ def create_app(
     app.state.settings = settings
     app.state.database = db
     app.state.verifier = token_verifier
+    app.state.ai_provider = None
 
     _install_exception_handlers(app)
     app.include_router(api_router, prefix=settings.api_v1_prefix)

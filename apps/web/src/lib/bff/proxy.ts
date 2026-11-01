@@ -24,6 +24,17 @@ const ROUTES: { pattern: RegExp; methods: ReadonlySet<string> }[] = [
   { pattern: /^me$/, methods: new Set(["GET", "PATCH"]) },
   { pattern: /^events$/, methods: new Set(["GET", "POST"]) },
   { pattern: new RegExp(`^events/${UUID}$`), methods: new Set(["GET", "PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/context$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/preferences$`), methods: new Set(["GET", "PUT"]) },
+  { pattern: new RegExp(`^events/${UUID}/functions$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/functions/${UUID}$`), methods: new Set(["PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/ai/conversations$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/ai/conversations/${UUID}$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/ai/conversations/${UUID}/messages$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/plans/generate$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/ai/proposals/${UUID}$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/ai/proposals/${UUID}/accept$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/ai/proposals/${UUID}/reject$`), methods: new Set(["POST"]) },
 ];
 const FORWARDED_QUERY_KEYS = new Set(["limit", "cursor", "status", "include_archived", "sort"]);
 const MUTATING = new Set(["POST", "PATCH", "PUT", "DELETE"]);

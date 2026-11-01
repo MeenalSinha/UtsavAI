@@ -85,13 +85,56 @@ class Permission(StrEnum):
     EVENT_UPDATE = "event.update"
     EVENT_ARCHIVE = "event.archive"
     MEMBER_MANAGE = "member.manage"
+    PREFERENCE_MANAGE = "preference.manage"
+    FUNCTION_MANAGE = "function.manage"
+    PLAN_GENERATE = "plan.generate"
+    PLAN_ACCEPT = "plan.accept"
 
 
 ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
     MemberRole.OWNER: frozenset(Permission),
-    MemberRole.EDITOR: frozenset({Permission.EVENT_READ, Permission.EVENT_UPDATE}),
+    MemberRole.EDITOR: frozenset(
+        {
+            Permission.EVENT_READ,
+            Permission.EVENT_UPDATE,
+            Permission.PREFERENCE_MANAGE,
+            Permission.FUNCTION_MANAGE,
+            Permission.PLAN_GENERATE,
+            Permission.PLAN_ACCEPT,
+        }
+    ),
     MemberRole.VIEWER: frozenset({Permission.EVENT_READ}),
 }
+
+
+class ProposalStatus(StrEnum):
+    PROPOSED = "proposed"
+    PARTIALLY_ACCEPTED = "partially_accepted"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    STALE = "stale"
+
+
+class TaskStatus(StrEnum):
+    TODO = "todo"
+    IN_PROGRESS = "in_progress"
+    BLOCKED = "blocked"
+    DONE = "done"
+    CANCELLED = "cancelled"
+
+
+class TaskPriority(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+
+class TaskOrigin(StrEnum):
+    MANUAL = "manual"
+    AI_ACCEPTED = "ai_accepted"
+    ADAPTIVE_ACCEPTED = "adaptive_accepted"
+
 
 DEFAULT_PAGE_SIZE = 25
 MAX_PAGE_SIZE = 100

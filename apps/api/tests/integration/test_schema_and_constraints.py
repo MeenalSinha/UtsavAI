@@ -40,10 +40,17 @@ def test_expected_tables_exist_with_rls_enabled(admin):
         "where n.nspname = 'public' and relkind = 'r' order by relname"
     ).fetchall()
     assert dict(rows) == {
+        "ai_conversations": True,
+        "ai_messages": True,
+        "ai_proposals": True,
         "audit_logs": True,
+        "event_functions": True,
         "event_members": True,
+        "event_preferences": True,
         "events": True,
         "profiles": True,
+        "task_dependencies": True,
+        "tasks": True,
     }
 
 

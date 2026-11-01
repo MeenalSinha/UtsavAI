@@ -55,6 +55,16 @@ class Settings(BaseSettings):
     # CORS (explicit origins only, never "*")
     cors_allowed_origins: str = ""
 
+    # AI / Gemini (Phase 2)
+    gemini_api_key: SecretStr = Field(default=SecretStr(""))
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_timeout_seconds: float = Field(default=30.0, gt=0)
+    gemini_max_output_tokens: int = Field(default=4096, ge=256, le=16384)
+    gemini_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+    gemini_retries: int = Field(default=2, ge=0, le=5)
+    ai_feature_enabled: bool = True
+    ai_rate_limit_per_minute: int = Field(default=30, ge=1)
+
     @model_validator(mode="after")
     def _derive_and_validate(self) -> Self:
         errors: list[str] = []

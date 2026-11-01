@@ -9,6 +9,9 @@ export const routes = {
   events: "/events",
   newEvent: "/events/new",
   event: (id: string) => `/events/${id}`,
+  eventPreferences: (id: string) => `/events/${id}/preferences`,
+  eventFunctions: (id: string) => `/events/${id}/functions`,
+  eventPlanAi: (id: string) => `/events/${id}/plan-ai`,
   profile: "/profile",
 } as const;
 

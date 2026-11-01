@@ -55,7 +55,7 @@ export function EventWorkspace({ event, meta }: { event: EventDto; meta: MetaDto
         </div>
       </header>
 
-      <WorkspaceNav />
+      <WorkspaceNav eventId={event.id} activeModule="overview" />
 
       {archived && (
         <p role="status" className="rounded-md border bg-secondary px-4 py-3 text-sm">

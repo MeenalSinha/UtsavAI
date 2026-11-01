@@ -345,28 +345,64 @@ def accept_change_proposal(
                 if patch_vals:
                     functions_repo.update_function(conn, event_id, fid, patch_vals)
 
-        # 4. Apply selected secondary options
+        # 4. Apply selected secondary options strictly
+        ALLOWED_OP_CODES = {
+            "op_shift_task_due_dates",
+            "op_extend_gift_registry_expiry",
+            "op_flag_budget_for_review",
+            "op_mark_vendor_quotes_review",
+        }
         available_options = {opt["id"]: opt for opt in impact_data.get("suggested_options", [])}
         for sel_id in req.selected_option_ids:
             if sel_id not in available_options:
-                continue
+                raise InvalidRequestError(f"Selected option '{sel_id}' does not exist on proposal.")
             opt = available_options[sel_id]
             for op in opt.get("operations", []):
                 op_code = op.get("op_code")
+                if op_code not in ALLOWED_OP_CODES:
+                    raise InvalidRequestError(
+                        f"Unsupported or unregistered operation code '{op_code}' in option '{sel_id}'."
+                    )
                 payload = op.get("payload", {})
+                if not isinstance(payload, dict):
+                    raise InvalidRequestError(f"Malformed operation payload for '{op_code}'.")
+
                 if op_code == "op_shift_task_due_dates":
-                    shift_sec = int(payload.get("shift_seconds", 0))
+                    try:
+                        shift_sec = int(payload.get("shift_seconds", 0))
+                    except (ValueError, TypeError) as err:
+                        raise InvalidRequestError(
+                            "Malformed payload for op_shift_task_due_dates: shift_seconds must be an integer."
+                        ) from err
                     if shift_sec != 0:
                         adaptive_repo.shift_task_due_dates(conn, event_id, shift_sec)
                 elif op_code == "op_extend_gift_registry_expiry":
                     reg_id_str = payload.get("registry_id")
                     new_exp_str = payload.get("new_expires_at")
-                    if reg_id_str and new_exp_str:
-                        adaptive_repo.extend_gift_registry_expiry(
-                            conn,
-                            uuid.UUID(reg_id_str),
-                            datetime.fromisoformat(new_exp_str),
+                    if not reg_id_str or not new_exp_str:
+                        raise InvalidRequestError(
+                            "Malformed payload for op_extend_gift_registry_expiry: "
+                            "missing registry_id or new_expires_at."
                         )
+                    try:
+                        reg_id = uuid.UUID(str(reg_id_str))
+                        new_exp_dt = datetime.fromisoformat(str(new_exp_str))
+                    except (ValueError, TypeError) as err:
+                        raise InvalidRequestError(
+                            f"Invalid registry_id or timestamp in operation payload: {err}"
+                        ) from err
+
+                    # Verify referenced registry belongs to this event
+                    reg_check = conn.execute(
+                        "SELECT event_id FROM public.gift_registries WHERE id = %s",
+                        (reg_id,),
+                    ).fetchone()
+                    if reg_check is None or reg_check["event_id"] != event_id:
+                        raise InvalidRequestError(
+                            "Referenced gift registry in operation does not belong to this event."
+                        )
+
+                    adaptive_repo.extend_gift_registry_expiry(conn, reg_id, new_exp_dt)
                 elif op_code in ("op_flag_budget_for_review", "op_mark_vendor_quotes_review"):
                     audit.record(
                         conn,

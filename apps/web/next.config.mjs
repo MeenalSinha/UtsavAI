@@ -30,6 +30,7 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  output: process.env.DOCKER_BUILD ? "standalone" : undefined,
   eslint: { ignoreDuringBuilds: false },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

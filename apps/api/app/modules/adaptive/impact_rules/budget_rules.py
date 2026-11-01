@@ -130,6 +130,18 @@ def evaluate_budget_rules(
                         ),
                     )
                 )
+                records.append(
+                    AffectedRecord(
+                        module="budget",
+                        entity_type="budget",
+                        entity_name="Per-Guest Budget Ratio",
+                        change_nature="guest_pressure",
+                        details=(
+                            f"Per-guest allocation decreases from {currency} {curr_per_guest:,.2f} "
+                            f"to {currency} {new_per_guest:,.2f}."
+                        ),
+                    )
+                )
 
             options.append(
                 SuggestedOption(

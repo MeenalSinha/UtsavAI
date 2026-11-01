@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 
+import { Footer } from "@/components/layout/footer";
 import { Logo } from "@/components/layout/logo";
 import { NavLinks } from "@/components/layout/nav-links";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ export function AppShell({ displayName, email, children }: { displayName: string
         <main id="main" className="flex-1 px-4 py-8 sm:px-6 lg:px-10">
           <div className="mx-auto w-full max-w-6xl">{children}</div>
         </main>
+        <Footer />
       </div>
     </div>
   );

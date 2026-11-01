@@ -158,3 +158,29 @@ def test_adaptive_proposal_rejection(client, make_user):
     )
     assert rej_res.status_code == 200
     assert rej_res.json()["status"] == "rejected"
+
+
+def test_adaptive_proposal_invalid_option_rejected(client, make_user):
+    host = make_user("owner")
+    res = client.post(f"{BASE}/events", json=event_payload(), headers=host.headers)
+    event_id = res.json()["id"]
+    base_rev = res.json()["revision"]
+
+    prop_res = client.post(
+        f"{BASE}/events/{event_id}/change-proposals",
+        json={
+            "base_revision": base_rev,
+            "request_text": "Option validation test",
+            "event_changes": {"expected_guest_count": 350},
+        },
+        headers=host.headers,
+    )
+    proposal_id = prop_res.json()["id"]
+
+    bad_accept = client.post(
+        f"{BASE}/events/{event_id}/change-proposals/{proposal_id}/accept",
+        json={"selected_option_ids": ["non_existent_option_123"]},
+        headers=host.headers,
+    )
+    assert bad_accept.status_code == 400
+    assert "Selected option" in bad_accept.json()["message"]

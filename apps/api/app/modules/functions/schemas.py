@@ -53,10 +53,10 @@ class FunctionOut(BaseModel):
     id: uuid.UUID
     event_id: uuid.UUID
     name: str
-    starts_at: datetime | None
-    ends_at: datetime | None
-    location_name: str | None
-    notes: str | None
-    sort_order: int
+    starts_at: datetime | None = None
+    ends_at: datetime | None = None
+    location_name: str | None = None
+    notes: str | None = None
+    sort_order: int = 0
     created_at: datetime
     updated_at: datetime

@@ -60,7 +60,7 @@ jobs:
         run: uv run mypy
       - name: Tests (unit, database, RLS, pool isolation, API)
         working-directory: apps/api
-        run: uv run pytest -q
+        run: uv run pytest -v --tb=short
       - name: Dependency audit
         working-directory: apps/api
         run: |

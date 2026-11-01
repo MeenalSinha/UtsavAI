@@ -226,7 +226,7 @@ def test_shared_event_context_includes_budget_and_timeline(client, make_user, ad
 
 
 # ------------------------------------------------------------------ AI Budget and Timeline Proposals
-def test_ai_budget_proposal_generation_and_acceptance(client, make_user, admin, app):
+def test_ai_budget_proposal_generation_and_acceptance(client, make_user, admin):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
@@ -238,33 +238,31 @@ def test_ai_budget_proposal_generation_and_acceptance(client, make_user, admin, 
     )
 
     # Inject fake AI response
-    fake_provider = FakeGenerationProvider(
-        payload={
-            "schema_version": 1,
-            "summary": "Tailored budget allocation for Rajasthan royal wedding",
-            "assumptions": ["300 guests expected"],
-            "warnings": [],
-            "savings_recommendations": ["Combine sound and lighting vendors"],
-            "follow_up_questions": [],
-            "proposed_allocations": [
-                {
-                    "category_key": "venue_catering",
-                    "name": "Palace Venue & Banquet",
-                    "percentage": 50.0,
-                    "suggested_amount": 500000.00,
-                    "notes": "Food and palace rental",
-                },
-                {
-                    "category_key": "decor_styling",
-                    "name": "Royal Floral Decor",
-                    "percentage": 50.0,
-                    "suggested_amount": 500000.00,
-                    "notes": "Mandap and lighting",
-                },
-            ],
-        }
-    )
-    app.state.ai_provider = fake_provider
+    fake_payload = {
+        "schema_version": 1,
+        "summary": "Tailored budget allocation for Rajasthan royal wedding",
+        "assumptions": ["300 guests expected"],
+        "warnings": [],
+        "savings_recommendations": ["Combine sound and lighting vendors"],
+        "follow_up_questions": [],
+        "proposed_allocations": [
+            {
+                "category_key": "venue_catering",
+                "name": "Palace Venue & Banquet",
+                "percentage": 50.0,
+                "suggested_amount": 500000.00,
+                "notes": "Food and palace rental",
+            },
+            {
+                "category_key": "decor_styling",
+                "name": "Royal Floral Decor",
+                "percentage": 50.0,
+                "suggested_amount": 500000.00,
+                "notes": "Mandap and lighting",
+            },
+        ],
+    }
+    client.app.state.ai_provider = FakeGenerationProvider(canned_response=fake_payload)
 
     gen_res = client.post(
         f"{BASE}/events/{event_id}/budget/ai/generate",
@@ -295,40 +293,38 @@ def test_ai_budget_proposal_generation_and_acceptance(client, make_user, admin, 
     assert "decor_styling" in cat_keys
 
 
-def test_ai_timeline_proposal_generation_and_acceptance(client, make_user, admin, app):
+def test_ai_timeline_proposal_generation_and_acceptance(client, make_user, admin):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
 
     now = datetime.now(UTC)
-    fake_provider = FakeGenerationProvider(
-        payload={
-            "schema_version": 1,
-            "summary": "Preparation schedule leading to the ceremonies",
-            "assumptions": [],
-            "warnings": [],
-            "follow_up_questions": [],
-            "proposed_tasks": [
-                {
-                    "client_ref": "t_venue",
-                    "title": "Confirm Venue Contract",
-                    "due_at": (now + timedelta(days=5)).isoformat(),
-                    "priority": "urgent",
-                    "function_ref": None,
-                    "depends_on": [],
-                },
-                {
-                    "client_ref": "t_caterer",
-                    "title": "Taste and finalize catering menu",
-                    "due_at": (now + timedelta(days=12)).isoformat(),
-                    "priority": "high",
-                    "function_ref": None,
-                    "depends_on": ["t_venue"],
-                },
-            ],
-        }
-    )
-    app.state.ai_provider = fake_provider
+    fake_payload = {
+        "schema_version": 1,
+        "summary": "Preparation schedule leading to the ceremonies",
+        "assumptions": [],
+        "warnings": [],
+        "follow_up_questions": [],
+        "proposed_tasks": [
+            {
+                "client_ref": "t_venue",
+                "title": "Confirm Venue Contract",
+                "due_at": (now + timedelta(days=5)).isoformat(),
+                "priority": "urgent",
+                "function_ref": None,
+                "depends_on": [],
+            },
+            {
+                "client_ref": "t_caterer",
+                "title": "Taste and finalize catering menu",
+                "due_at": (now + timedelta(days=12)).isoformat(),
+                "priority": "high",
+                "function_ref": None,
+                "depends_on": ["t_venue"],
+            },
+        ],
+    }
+    client.app.state.ai_provider = FakeGenerationProvider(canned_response=fake_payload)
 
     gen_res = client.post(
         f"{BASE}/events/{event_id}/timeline/ai/generate",
@@ -360,4 +356,4 @@ def test_ai_timeline_proposal_generation_and_acceptance(client, make_user, admin
     assert "Taste and finalize catering menu" in tasks_by_title
     caterer_task = tasks_by_title["Taste and finalize catering menu"]
     venue_task = tasks_by_title["Confirm Venue Contract"]
-    assert venue_task["id"] in caterer_task["depends_on_task_ids"]
+    assert str(venue_task["id"]) in [str(d) for d in caterer_task["depends_on_task_ids"]]

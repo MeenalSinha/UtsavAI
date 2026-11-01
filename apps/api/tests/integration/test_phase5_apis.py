@@ -213,7 +213,8 @@ def test_giftcircle_full_lifecycle(client, make_user):
     gift_sum = ctx_res.json()["gift_summary"]
     assert gift_sum is not None
     assert gift_sum["total_items"] == 2
-    assert Decimal(str(gift_sum["total_contributed"])) == Decimal("40000.00")
+    assert Decimal(str(gift_sum["host_confirmed_amount"])) == Decimal("40000.00")
+    assert Decimal(str(gift_sum["active_group_pledges"])) == Decimal("0.00")
 
     # 16. Revoke share link
     revoke_res = client.delete(

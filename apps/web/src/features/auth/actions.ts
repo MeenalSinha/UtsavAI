@@ -31,6 +31,15 @@ export async function signInAction(_prev: ActionState, formData: FormData): Prom
   const parsed = signInSchema.safeParse({ email: text(formData, "email"), password: text(formData, "password") });
   if (!parsed.success) return { ok: false, fieldErrors: flattenErrors(parsed.error) };
 
+  const env = getServerEnv();
+  if (env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder")) {
+    return {
+      ok: false,
+      message:
+        "Authentication is configured with placeholder credentials. Please connect a live Supabase project (NEXT_PUBLIC_SUPABASE_URL & ANON_KEY), or run 'npm run demo' for local interactive testing.",
+    };
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
@@ -55,6 +64,15 @@ export async function signUpAction(_prev: ActionState, formData: FormData): Prom
   });
   if (!parsed.success) return { ok: false, fieldErrors: flattenErrors(parsed.error) };
 
+  const env = getServerEnv();
+  if (env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder")) {
+    return {
+      ok: false,
+      message:
+        "Authentication is configured with placeholder credentials. Please connect a live Supabase project (NEXT_PUBLIC_SUPABASE_URL & ANON_KEY), or run 'npm run demo' for local interactive testing.",
+    };
+  }
+
   const supabase = await createClient();
   const origin = await siteOrigin();
   const { data, error } = await supabase.auth.signUp({
@@ -78,6 +96,15 @@ export async function forgotPasswordAction(_prev: ActionState, formData: FormDat
   const parsed = forgotPasswordSchema.safeParse({ email: text(formData, "email") });
   if (!parsed.success) return { ok: false, fieldErrors: flattenErrors(parsed.error) };
 
+  const env = getServerEnv();
+  if (env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder")) {
+    return {
+      ok: false,
+      message:
+        "Authentication is configured with placeholder credentials. Please connect a live Supabase project (NEXT_PUBLIC_SUPABASE_URL & ANON_KEY), or run 'npm run demo' for local interactive testing.",
+    };
+  }
+
   const supabase = await createClient();
   const origin = await siteOrigin();
   await supabase.auth.resetPasswordForEmail(parsed.data.email, {
@@ -92,6 +119,15 @@ export async function resetPasswordAction(_prev: ActionState, formData: FormData
     confirmPassword: text(formData, "confirmPassword"),
   });
   if (!parsed.success) return { ok: false, fieldErrors: flattenErrors(parsed.error) };
+
+  const env = getServerEnv();
+  if (env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder")) {
+    return {
+      ok: false,
+      message:
+        "Authentication is configured with placeholder credentials. Please connect a live Supabase project (NEXT_PUBLIC_SUPABASE_URL & ANON_KEY), or run 'npm run demo' for local interactive testing.",
+    };
+  }
 
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();

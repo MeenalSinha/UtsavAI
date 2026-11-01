@@ -191,15 +191,19 @@ def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID)
             categories = budget_repo.list_categories(conn, budget_row["id"])
             expenses = budget_repo.list_expenses(conn, event_id)
 
-            total_allocated = sum(Decimal(str(c["planned_amount"])) for c in categories)
+            zero = Decimal("0")
+            total_allocated = sum((Decimal(str(c["planned_amount"])) for c in categories), start=zero)
             planned_exp = sum(
-                Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.PLANNED.value
+                (Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.PLANNED.value),
+                start=zero,
             )
             committed_exp = sum(
-                Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.COMMITTED.value
+                (Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.COMMITTED.value),
+                start=zero,
             )
             paid_exp = sum(
-                Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.PAID.value
+                (Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.PAID.value),
+                start=zero,
             )
 
             context_budget = ContextBudgetSummary(

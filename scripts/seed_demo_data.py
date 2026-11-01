@@ -24,14 +24,14 @@ import sys
 import uuid
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 
 # Add apps/api to path so we can import models and settings
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "apps" / "api"))
 
 import psycopg
-from psycopg.rows import dict_row
-
 from app.core.config import get_settings
+from psycopg.rows import dict_row
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger("seed_demo")
@@ -43,16 +43,14 @@ DEMO_SHARE_TOKEN = "demo-jaipur-aarav-meera"  # noqa: S105
 DEMO_TOKEN_HASH = hashlib.sha256(DEMO_SHARE_TOKEN.encode("utf-8")).hexdigest()
 
 
-def get_connection(admin_url: str | None = None) -> psycopg.Connection:
+def get_connection(admin_url: str | None = None) -> psycopg.Connection[Any]:
     settings = get_settings()
     conninfo = admin_url or settings.database_url.get_secret_value()
     return psycopg.connect(conninfo, row_factory=dict_row, autocommit=False)
 
 
-def clean_demo_data(conn: psycopg.Connection) -> None:
-    logger.info(
-        "Cleaning demo data for user %s and event %s...", DEMO_USER_ID, DEMO_EVENT_ID
-    )
+def clean_demo_data(conn: psycopg.Connection[Any]) -> None:
+    logger.info("Cleaning demo data for user %s and event %s...", DEMO_USER_ID, DEMO_EVENT_ID)
     with conn.cursor() as cur:
         # Cascades handle most relationships through foreign keys
         cur.execute("DELETE FROM public.events WHERE id = %s", (DEMO_EVENT_ID,))
@@ -61,7 +59,7 @@ def clean_demo_data(conn: psycopg.Connection) -> None:
     logger.info("Demo data cleaned successfully.")
 
 
-def seed_demo_data(conn: psycopg.Connection) -> None:
+def seed_demo_data(conn: psycopg.Connection[Any]) -> None:
     logger.info("Seeding synthetic 3-day Jaipur Royal Wedding demo...")
     now = datetime.datetime.now(datetime.UTC)
     day1_start = now + datetime.timedelta(days=45)
@@ -545,15 +543,9 @@ def seed_demo_data(conn: psycopg.Connection) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Seed or clean UtsavAI synthetic demo environment."
-    )
-    parser.add_argument(
-        "--clean", action="store_true", help="Remove synthetic demo records."
-    )
-    parser.add_argument(
-        "--admin-url", type=str, default=None, help="PostgreSQL connection string."
-    )
+    parser = argparse.ArgumentParser(description="Seed or clean UtsavAI synthetic demo environment.")
+    parser.add_argument("--clean", action="store_true", help="Remove synthetic demo records.")
+    parser.add_argument("--admin-url", type=str, default=None, help="PostgreSQL connection string.")
     args = parser.parse_args()
 
     conn = get_connection(args.admin_url)

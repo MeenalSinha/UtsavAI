@@ -62,10 +62,15 @@ def test_zero_guest_count_allowed():
     assert EventCreate(**valid(expected_guest_count=0)).expected_guest_count == 0
 
 
-@pytest.mark.parametrize("category", ["birthday", "community", "nonsense", ""])
+@pytest.mark.parametrize("category", ["nonsense", "", "space_mission", "unsupported_event"])
 def test_only_enabled_categories_accepted(category):
     with pytest.raises(ValidationError):
         EventCreate(**valid(event_type=category))
+
+
+@pytest.mark.parametrize("category", ["wedding", "birthday", "community", "anniversary"])
+def test_enabled_categories_accepted(category):
+    assert EventCreate(**valid(event_type=category)).event_type == category
 
 
 def test_wedding_category_enabled():

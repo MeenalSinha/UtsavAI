@@ -611,9 +611,7 @@ class MockHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(raw)))
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header(
-            "Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS"
-        )
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "*")
         self.end_headers()
         self.wfile.write(raw)
@@ -621,9 +619,7 @@ class MockHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header(
-            "Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS"
-        )
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "*")
         self.end_headers()
 
@@ -631,11 +627,7 @@ class MockHandler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         path = url.path.rstrip("/")
         content_length = int(self.headers.get("Content-Length", 0))
-        body = (
-            self.rfile.read(content_length).decode("utf-8")
-            if content_length > 0
-            else "{}"
-        )
+        body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
         try:
             payload = json.loads(body)
         except Exception:
@@ -702,9 +694,7 @@ class MockHandler(BaseHTTPRequestHandler):
 
         # 2. Health & Meta
         if path == "/api/v1/health":
-            return self._send_json(
-                200, {"status": "ok", "service": "utsavai-api", "version": "0.1.0"}
-            )
+            return self._send_json(200, {"status": "ok", "service": "utsavai-api", "version": "0.1.0"})
         if path == "/api/v1/meta":
             return self._send_json(200, DEMO_META)
         if path == "/api/v1/me":

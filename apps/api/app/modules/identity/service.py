@@ -24,10 +24,12 @@ class IdentityService:
 
     @staticmethod
     def _to_out(row: dict[str, object], principal: Principal) -> ProfileOut:
+        raw_display = row.get("display_name")
+        raw_tz = row.get("timezone")
         return ProfileOut(
             user_id=str(row["user_id"]),
-            display_name=row["display_name"],
+            display_name=str(raw_display) if raw_display is not None else None,
             preferred_locale=str(row["preferred_locale"]),
-            timezone=row["timezone"],
+            timezone=str(raw_tz) if raw_tz is not None else None,
             email=principal.email,
         )

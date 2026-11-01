@@ -1,0 +1,36 @@
+[project]
+name = "utsavai"
+version = "0.1.0"
+description = "UtsavAI: AI-Powered Multi-Day Indian Celebration Planning Platform"
+readme = "README.md"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "SIM", "C4", "PT"]
+ignore = ["B008", "S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S608", "E501", "B017", "PT011", "PT012", "SIM117", "S311", "PT018", "PT006", "PT022"]
+"scripts/**" = ["S101", "S105", "S106", "S608", "E501", "T201"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+warn_unused_ignores = false
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "app.*"
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+  "apps.api.tests.*",
+  "tests.*"
+]
+ignore_errors = true

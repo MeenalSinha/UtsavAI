@@ -31,9 +31,7 @@ def check(name: str, ok: bool, detail: str = "") -> None:
 
 def main() -> int:
     settings = get_settings()
-    db = Database(
-        settings.model_copy(update={"db_pool_min_size": 1, "db_pool_max_size": 1})
-    )
+    db = Database(settings.model_copy(update={"db_pool_min_size": 1, "db_pool_max_size": 1}))
     db.open()
     try:
         with db.transaction(None, "verify") as conn:
@@ -42,11 +40,11 @@ def main() -> int:
             ).fetchone()
             check(
                 "runtime role is NOSUPERUSER and NOBYPASSRLS",
-                bool(role) and not role["rolsuper"] and not role["rolbypassrls"],
-                str(role["rolname"]),
+                role is not None and not bool(role.get("rolsuper")) and not bool(role.get("rolbypassrls")),
+                str(role.get("rolname") if role else "None"),
             )
             tables = {
-                r["relname"]: r["relrowsecurity"]
+                str(r["relname"]): bool(r["relrowsecurity"])
                 for r in conn.execute(
                     "select c.relname, c.relrowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace "
                     "where n.nspname='public' and c.relname in ('profiles','events','event_members','audit_logs')"
@@ -57,34 +55,30 @@ def main() -> int:
                 len(tables) == 4 and all(tables.values()),
                 str(tables),
             )
-            fn = conn.execute(
-                "select to_regprocedure('app.current_user_id()') as f"
-            ).fetchone()
+            fn = conn.execute("select to_regprocedure('app.current_user_id()') as f").fetchone()
             check(
-                "app.current_user_id() exists (migrations applied)", fn["f"] is not None
+                "app.current_user_id() exists (migrations applied)",
+                fn is not None and fn.get("f") is not None,
             )
 
         user_a, user_b = uuid.uuid4(), uuid.uuid4()
         with db.transaction(user_a, "verify-a") as conn:
-            pid_a = conn.execute("select pg_backend_pid() as p").fetchone()["p"]
-            seen = conn.execute("select app.current_user_id()::text as u").fetchone()[
-                "u"
-            ]
+            row_p = conn.execute("select pg_backend_pid() as p").fetchone()
+            pid_a = row_p["p"] if row_p else None
+            row_u = conn.execute("select app.current_user_id()::text as u").fetchone()
+            seen = row_u["u"] if row_u else None
             check("identity visible inside its own transaction", seen == str(user_a))
         with db.transaction(user_b, "verify-b") as conn:
-            pid_b = conn.execute("select pg_backend_pid() as p").fetchone()["p"]
-            seen = conn.execute("select app.current_user_id()::text as u").fetchone()[
-                "u"
-            ]
+            row_p = conn.execute("select pg_backend_pid() as p").fetchone()
+            pid_b = row_p["p"] if row_p else None
+            row_u = conn.execute("select app.current_user_id()::text as u").fetchone()
+            seen = row_u["u"] if row_u else None
             check("second user sees only their own identity", seen == str(user_b))
         with db.transaction(None, "verify-none") as conn:
-            seen = conn.execute("select app.current_user_id() as u").fetchone()["u"]
-            check(
-                "no identity leaks into a following anonymous transaction", seen is None
-            )
-        print(
-            f"INFO backend pids: {pid_a}, {pid_b} (equal pids prove the session was reused)"
-        )
+            row_u = conn.execute("select app.current_user_id() as u").fetchone()
+            seen = row_u["u"] if row_u else None
+            check("no identity leaks into a following anonymous transaction", seen is None)
+        print(f"INFO backend pids: {pid_a}, {pid_b} (equal pids prove the session was reused)")
     finally:
         db.close()
 

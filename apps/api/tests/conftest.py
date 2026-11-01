@@ -13,7 +13,6 @@ from fastapi.testclient import TestClient
 
 from app.core.config import Settings
 from app.core.security import StaticKeyResolver, TokenVerifier
-from app.database.pool import Database
 from app.main import create_app
 
 ISSUER = "https://test-project.supabase.co/auth/v1"
@@ -74,10 +73,23 @@ def settings() -> Settings:
     return build_settings()
 
 
+class _OfflineDatabase:
+    """Stub database for offline tests that validates no SQL is executed."""
+
+    def open(self) -> None:
+        pass
+
+    def close(self) -> None:
+        pass
+
+    def verify_runtime_role(self) -> None:
+        pass
+
+
 @pytest.fixture
 def offline_client(settings: Settings, verifier: TokenVerifier) -> Iterator[TestClient]:
     """App without a running database: for auth/validation paths that never reach SQL."""
-    app = create_app(settings, database=Database(settings), verifier=verifier)
+    app = create_app(settings, database=_OfflineDatabase(), verifier=verifier)  # type: ignore[arg-type]
     yield TestClient(app, raise_server_exceptions=False)
 
 

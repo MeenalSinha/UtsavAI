@@ -135,6 +135,7 @@ export function PlanAiWorkspace({ event, initialConversations }: PlanAiWorkspace
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConversationId, event.id]);
 
   const handleStartNewConversation = () => {

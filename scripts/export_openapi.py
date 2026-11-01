@@ -19,5 +19,6 @@ from app.main import create_app  # noqa: E402
 settings = get_settings()
 schema = create_app(settings, database=Database(settings)).openapi()
 target = ROOT / "apps" / "web" / "openapi.json"
-target.write_text(json.dumps(schema, indent=2, sort_keys=True) + "\n")
+with open(target, "w", encoding="utf-8", newline="\n") as f:
+    f.write(json.dumps(schema, indent=2, sort_keys=True) + "\n")
 print(f"wrote {target}")

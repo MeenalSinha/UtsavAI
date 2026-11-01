@@ -82,3 +82,4 @@ Users have granular control over AI recommendations:
 1. **Full or Selective Acceptance:** Users can choose to accept all ceremonies and tasks, or selectively check specific ceremonies (e.g. only Sangeet and Pheras) and tasks.
 2. **Rejection:** Users can reject a proposal if they wish to re-prompt or discard the suggestions.
 3. **Stale Revision Prevention:** If an event's details or existing functions change after a proposal is generated, the proposal becomes stale (`event.revision > proposal.base_revision`). The backend rejects attempts to accept stale proposals with HTTP 409 Conflict (`STALE_PROPOSAL`), prompting the user to regenerate based on the newest event context.
+

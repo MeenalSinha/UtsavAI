@@ -6,7 +6,7 @@ status=0
 flag() { echo "FOUND: $1"; status=1; }
 
 FILES=$(git ls-files 2>/dev/null || find . -type f -not -path '*/node_modules/*' -not -path '*/.venv/*' -not -path '*/.next/*' -not -path '*/.git/*' -not -name 'package-lock.json' -not -name 'uv.lock')
-FILES=$(echo "$FILES" | grep -v -E '(package-lock\.json|uv\.lock|openapi\.json|scan_secrets\.sh|\.png$|\.ico$)')
+FILES=$(echo "$FILES" | grep -v -E '(package-lock\.json|uv\.lock|openapi\.json|scan_secrets\.sh|scan_secrets\.py|\.png$|\.ico$)')
 
 echo "$FILES" | grep -E '(^|/)\.env($|\.)' | grep -v '\.env\.example$' && flag "committed .env file"
 echo "$FILES" | xargs grep -n -E 'eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.' 2>/dev/null && flag "JWT-like token"

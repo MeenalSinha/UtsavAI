@@ -9,6 +9,7 @@ create table public.event_functions (
   location_name text check (location_name is null or char_length(location_name) <= 240),
   notes         text check (notes is null or char_length(notes) <= 4000),
   sort_order    integer not null default 0,
+  is_deleted    boolean not null default false,
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now(),
   constraint event_functions_time_range check (
@@ -24,7 +25,6 @@ create index event_functions_event_starts_idx on public.event_functions (event_i
 create or replace function app.functions_touch_event()
 returns trigger
 language plpgsql
-security definer
 set search_path = ''
 as $$
 declare
@@ -38,7 +38,7 @@ begin
   end if;
 
   update public.events
-     set updated_at = pg_catalog.now()
+     set title = title
    where id = target_id
      and status <> 'archived';
 

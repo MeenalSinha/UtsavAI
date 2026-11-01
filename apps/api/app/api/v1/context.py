@@ -20,4 +20,3 @@ def get_context(
 ) -> SharedEventContext:
     """Return unified, permission-filtered context for the event workspace."""
     return build_event_context(db, principal, event_id)
-

@@ -106,3 +106,4 @@ Phase 2 introduces the persistence foundation for Event Preferences, Event Funct
   * `app.delete_event_function(p_function_id UUID, p_event_id UUID)`
   * `app.delete_ai_conversation(p_conversation_id UUID, p_event_id UUID)`
   These verify membership before performing the deletion within an isolated database context.
+

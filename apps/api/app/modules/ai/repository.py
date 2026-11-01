@@ -30,7 +30,7 @@ def list_conversations(conn: Connection, event_id: uuid.UUID, user_id: uuid.UUID
         """
         select id, event_id, user_id, title, created_at, updated_at
           from public.ai_conversations
-         where event_id = %s and user_id = %s
+         where event_id = %s and user_id = %s and not is_deleted
          order by updated_at desc
         """,
         (event_id, user_id),
@@ -45,7 +45,7 @@ def get_conversation(
         """
         select id, event_id, user_id, title, created_at, updated_at
           from public.ai_conversations
-         where id = %s and event_id = %s and user_id = %s
+         where id = %s and event_id = %s and user_id = %s and not is_deleted
         """,
         (conversation_id, event_id, user_id),
     ).fetchone()

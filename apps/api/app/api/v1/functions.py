@@ -63,4 +63,3 @@ def delete_function(
     """Remove a function from the event."""
     service.delete_event_function(db, principal, event_id, function_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-

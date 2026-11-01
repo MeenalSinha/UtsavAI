@@ -83,3 +83,4 @@ It eliminates fragmented queries and ensures consistent, tenant-isolated state p
 1. **Concurrency and Stale State Guard:** The `revision` integer represents the monotonic revision counter of the parent event. Every modification to functions or preferences increments this revision. Plan proposals bind to a `base_revision`; if the event revision advances, the proposal is marked stale.
 2. **Deterministic Role Filtering:** Viewers receive `can_edit: false`, `can_generate_plan: false`, `can_accept_plan: false`.
 3. **No Private Leakage:** Only event-scoped operational data is exposed; no user auth credentials, hashes, or unrelated account metadata are leaked into the context payload.
+

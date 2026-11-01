@@ -44,3 +44,4 @@ The test suite evaluates 15 diverse scenarios, covering varied wedding scales, c
 1. **Deterministic DAG Verification:** By running cycle detection via Depth-First Search prior to saving any proposal, corrupt task graph dependencies are caught immediately at the API boundary.
 2. **Timing Consistency:** Pydantic validators enforce that ceremony timestamps fall within realistic intervals and that `ends_at >= starts_at`.
 3. **Graceful Clarification:** In low-context scenarios, PlanAI populates `follow_up_questions` rather than making wild hallucinations, inviting the user to specify their vision conversationally.
+

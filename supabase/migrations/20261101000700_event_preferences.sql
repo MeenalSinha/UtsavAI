@@ -15,13 +15,12 @@ comment on table public.event_preferences is 'User-supplied cultural, style, and
 create or replace function app.preferences_touch_event()
 returns trigger
 language plpgsql
-security definer
 set search_path = ''
 as $$
 begin
   new.updated_at := pg_catalog.now();
   update public.events
-     set updated_at = pg_catalog.now()
+     set title = title
    where id = new.event_id
      and status <> 'archived';
   return new;

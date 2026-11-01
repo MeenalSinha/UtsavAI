@@ -67,3 +67,4 @@ response = client.models.generate_content(
    If the model response fails Pydantic schema validation or domain constraints (such as cyclic task dependencies or missing client references), the backend catches this, rejects the unvalidated payload, logs an audit entry, and raises `AIValidationError` (HTTP 502 Bad Gateway) rather than corrupting the database.
 4. **Deterministic Testing:**
    In automated unit and integration tests, `FakeGenerationProvider` is injected into `app.state.ai_provider`, providing deterministic, reproducible fixtures without making external network calls or incurring API costs.
+

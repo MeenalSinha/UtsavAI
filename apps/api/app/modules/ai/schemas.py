@@ -46,4 +46,3 @@ class ConversationOut(BaseModel):
 
 class ConversationDetailOut(ConversationOut):
     messages: list[MessageOut] = Field(default_factory=list)
-

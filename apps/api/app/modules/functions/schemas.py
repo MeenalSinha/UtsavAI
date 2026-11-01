@@ -60,4 +60,3 @@ class FunctionOut(BaseModel):
     sort_order: int
     created_at: datetime
     updated_at: datetime
-

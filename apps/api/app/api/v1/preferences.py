@@ -32,4 +32,3 @@ def replace_preferences(
 ) -> PreferencesResponse:
     """Replace preferences document and touch the parent event revision."""
     return service.replace_event_preferences(db, principal, event_id, body)
-

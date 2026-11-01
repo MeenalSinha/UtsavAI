@@ -18,7 +18,7 @@ def list_functions(conn: Connection, event_id: uuid.UUID) -> list[dict[str, Any]
         select id, event_id, name, starts_at, ends_at, location_name,
                notes, sort_order, created_at, updated_at
           from public.event_functions
-         where event_id = %s
+         where event_id = %s and not is_deleted
          order by sort_order asc, starts_at asc nulls last, created_at asc
         """,
         (event_id,),
@@ -32,7 +32,7 @@ def get_function(conn: Connection, event_id: uuid.UUID, function_id: uuid.UUID) 
         select id, event_id, name, starts_at, ends_at, location_name,
                notes, sort_order, created_at, updated_at
           from public.event_functions
-         where id = %s and event_id = %s
+         where id = %s and event_id = %s and not is_deleted
         """,
         (function_id, event_id),
     ).fetchone()
@@ -67,7 +67,7 @@ def update_function(
         """
         update public.event_functions
            set {sets}
-         where id = {fid} and event_id = {eid}
+         where id = {fid} and event_id = {eid} and not is_deleted
         returning id, event_id, name, starts_at, ends_at, location_name,
                   notes, sort_order, created_at, updated_at
         """

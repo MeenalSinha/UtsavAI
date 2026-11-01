@@ -5,6 +5,7 @@ create table public.ai_conversations (
   event_id   uuid not null references public.events (id) on delete cascade,
   user_id    uuid not null references public.profiles (user_id) on delete cascade,
   title      varchar(160),
+  is_deleted boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

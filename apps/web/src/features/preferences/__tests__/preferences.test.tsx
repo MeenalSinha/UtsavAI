@@ -86,3 +86,4 @@ describe("PreferencesForm", () => {
     expect(screen.getByDisplayValue("Hindu / Vedic")).toBeDisabled();
   });
 });
+

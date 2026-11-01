@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-import uuid
-
-import pytest
-
 from app.modules.ai.provider import FakeGenerationProvider
 from tests.integration.conftest import event_payload
 
@@ -315,7 +311,9 @@ def test_conversations_and_messages(client, make_user):
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
 
-    client.app.state.ai_provider = FakeGenerationProvider(canned_text="I recommend starting with venue shortlisting.")
+    client.app.state.ai_provider = FakeGenerationProvider(
+        canned_text="I recommend starting with venue shortlisting."
+    )
 
     # 1. Create conversation
     c_res = client.post(
@@ -343,4 +341,3 @@ def test_conversations_and_messages(client, make_user):
     assert len(msgs) == 2
     assert msgs[0]["role"] == "user"
     assert msgs[1]["role"] == "assistant"
-

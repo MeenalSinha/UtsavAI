@@ -29,4 +29,3 @@ class PreferencesResponse(BaseModel):
     accessibility_notes: dict[str, Any]
     schema_version: int
     updated_at: datetime
-

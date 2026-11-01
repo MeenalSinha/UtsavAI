@@ -36,7 +36,6 @@ create or replace function app.is_event_member(p_event_id uuid, p_required_roles
 returns boolean
 language sql
 stable
-security definer
 set search_path = ''
 as $$
   select exists (
@@ -57,11 +56,10 @@ $$;
 
 grant execute on function app.is_event_member(uuid, text[]) to utsavai_app;
 
--- Dedicated security-definer helper for removing an event function
+-- Dedicated helper for removing an event function
 create or replace function app.delete_event_function(p_event_id uuid, p_function_id uuid)
 returns boolean
 language plpgsql
-security definer
 set search_path = ''
 as $$
 declare
@@ -71,9 +69,12 @@ begin
     raise exception 'unauthorized to delete function' using errcode = '42501';
   end if;
 
-  delete from public.event_functions
+  update public.event_functions
+     set is_deleted = true,
+         updated_at = pg_catalog.now()
    where id = p_function_id
-     and event_id = p_event_id;
+     and event_id = p_event_id
+     and not is_deleted;
 
   get diagnostics deleted_count = row_count;
   return deleted_count > 0;
@@ -82,11 +83,10 @@ $$;
 
 grant execute on function app.delete_event_function(uuid, uuid) to utsavai_app;
 
--- Dedicated security-definer helper for removing an AI conversation
+-- Dedicated helper for removing an AI conversation
 create or replace function app.delete_ai_conversation(p_event_id uuid, p_conversation_id uuid)
 returns boolean
 language plpgsql
-security definer
 set search_path = ''
 as $$
 declare
@@ -96,10 +96,13 @@ begin
     raise exception 'unauthorized to delete conversation' using errcode = '42501';
   end if;
 
-  delete from public.ai_conversations
+  update public.ai_conversations
+     set is_deleted = true,
+         updated_at = pg_catalog.now()
    where id = p_conversation_id
      and event_id = p_event_id
-     and user_id = app.current_user_id();
+     and user_id = app.current_user_id()
+     and not is_deleted;
 
   get diagnostics deleted_count = row_count;
   return deleted_count > 0;

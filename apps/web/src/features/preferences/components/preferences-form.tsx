@@ -408,3 +408,4 @@ export function PreferencesForm({ event, initialPreferences }: PreferencesFormPr
     </form>
   );
 }
+

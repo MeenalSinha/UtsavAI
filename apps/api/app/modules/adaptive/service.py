@@ -6,6 +6,7 @@ import json
 import logging
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 
 from app.core.domain import MemberRole, Permission, role_allows
@@ -39,14 +40,15 @@ from app.modules.vendors import repository as vendors_repo
 logger = logging.getLogger(__name__)
 
 
-def _to_proposal_out(row: dict[str, Any]) -> ChangeProposalOut:
-    req_changes = row["requested_changes"]
-    if isinstance(req_changes, str):
-        req_changes = json.loads(req_changes)
+def _parse_json_field(val: Any) -> Any:
+    if isinstance(val, str):
+        return json.loads(val)
+    return val
 
-    impact_data = row["impact_result"]
-    if isinstance(impact_data, str):
-        impact_data = json.loads(impact_data)
+
+def _to_proposal_out(row: dict[str, Any]) -> ChangeProposalOut:
+    req_changes = _parse_json_field(row["requested_changes"])
+    impact_data = _parse_json_field(row["impact_result"])
 
     return ChangeProposalOut(
         id=row["id"],
@@ -267,13 +269,8 @@ def accept_change_proposal(
                 f"{ev['revision']}. Proposal is stale."
             )
 
-        req_changes = proposal["requested_changes"]
-        if isinstance(req_changes, str):
-            req_changes = json.loads(req_changes)
-
-        impact_data = proposal["impact_result"]
-        if isinstance(impact_data, str):
-            impact_data = json.loads(impact_data)
+        req_changes = _parse_json_field(proposal["requested_changes"])
+        impact_data = _parse_json_field(proposal["impact_result"])
 
         # 1. Apply primary event mutations
         event_chg = req_changes.get("event_changes")
@@ -305,8 +302,6 @@ def accept_change_proposal(
         # 2. Apply budget changes
         budget_chg = req_changes.get("budget_changes")
         if budget_chg and budget_chg.get("total_limit") is not None:
-            from decimal import Decimal
-
             limit_dec = Decimal(str(budget_chg["total_limit"]))
             budget_repo.update_budget(conn, event_id, limit_dec)
 

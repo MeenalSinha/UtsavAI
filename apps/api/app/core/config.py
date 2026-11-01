@@ -65,10 +65,7 @@ class Settings(BaseSettings):
     ai_feature_enabled: bool = True
     ai_rate_limit_per_minute: int = Field(default=30, ge=1)
 
-    @model_validator(mode="after")
-    def _derive_and_validate(self) -> Self:
-        errors: list[str] = []
-
+    def _validate_database_config(self, errors: list[str]) -> None:
         if not self.database_url.get_secret_value():
             errors.append("DATABASE_URL is required (runtime role connection string)")
         else:
@@ -85,6 +82,7 @@ class Settings(BaseSettings):
         if self.db_pool_min_size > self.db_pool_max_size:
             errors.append("DB_POOL_MIN_SIZE must be <= DB_POOL_MAX_SIZE")
 
+    def _validate_supabase_config(self, errors: list[str]) -> None:
         if not self.supabase_url:
             errors.append("SUPABASE_URL is required")
         else:
@@ -94,6 +92,7 @@ class Settings(BaseSettings):
             if not self.supabase_jwks_url:
                 self.supabase_jwks_url = f"{self.supabase_jwt_issuer}/.well-known/jwks.json"
 
+    def _validate_production_and_cors(self, errors: list[str]) -> None:
         if self.cors_origins_list and "*" in self.cors_origins_list:
             errors.append("CORS_ALLOWED_ORIGINS must list explicit origins, not '*'")
 
@@ -107,6 +106,13 @@ class Settings(BaseSettings):
             db_url = self.database_url.get_secret_value()
             if db_url and "sslmode=" not in db_url:
                 errors.append("DATABASE_URL must set sslmode=require (or verify-full) in production")
+
+    @model_validator(mode="after")
+    def _derive_and_validate(self) -> Self:
+        errors: list[str] = []
+        self._validate_database_config(errors)
+        self._validate_supabase_config(errors)
+        self._validate_production_and_cors(errors)
 
         if errors:
             raise ValueError("; ".join(errors))

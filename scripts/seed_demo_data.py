@@ -50,7 +50,9 @@ def get_connection(admin_url: str | None = None) -> psycopg.Connection:
 
 
 def clean_demo_data(conn: psycopg.Connection) -> None:
-    logger.info("Cleaning demo data for user %s and event %s...", DEMO_USER_ID, DEMO_EVENT_ID)
+    logger.info(
+        "Cleaning demo data for user %s and event %s...", DEMO_USER_ID, DEMO_EVENT_ID
+    )
     with conn.cursor() as cur:
         # Cascades handle most relationships through foreign keys
         cur.execute("DELETE FROM public.events WHERE id = %s", (DEMO_EVENT_ID,))
@@ -176,7 +178,19 @@ def seed_demo_data(conn: psycopg.Connection) -> None:
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name
                 """,
-                (fid, DEMO_EVENT_ID, fname, ftype, fstart, fend, floc, fguests, fsort, now, now),
+                (
+                    fid,
+                    DEMO_EVENT_ID,
+                    fname,
+                    ftype,
+                    fstart,
+                    fend,
+                    floc,
+                    fguests,
+                    fsort,
+                    now,
+                    now,
+                ),
             )
 
         # 5. BudgetAI: Categories & Expenses
@@ -531,9 +545,15 @@ def seed_demo_data(conn: psycopg.Connection) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Seed or clean UtsavAI synthetic demo environment.")
-    parser.add_argument("--clean", action="store_true", help="Remove synthetic demo records.")
-    parser.add_argument("--admin-url", type=str, default=None, help="PostgreSQL connection string.")
+    parser = argparse.ArgumentParser(
+        description="Seed or clean UtsavAI synthetic demo environment."
+    )
+    parser.add_argument(
+        "--clean", action="store_true", help="Remove synthetic demo records."
+    )
+    parser.add_argument(
+        "--admin-url", type=str, default=None, help="PostgreSQL connection string."
+    )
     args = parser.parse_args()
 
     conn = get_connection(args.admin_url)

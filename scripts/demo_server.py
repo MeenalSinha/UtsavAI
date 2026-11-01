@@ -9,9 +9,8 @@ Runs without external database dependencies for pristine screen recordings.
 from __future__ import annotations
 
 import json
-import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import urlparse
 
 HOST = "127.0.0.1"
 PORT = 8000
@@ -600,6 +599,7 @@ ADAPTIVE_PROPOSALS = [
 
 # ----------------- HTTP REQUEST HANDLER -----------------
 
+
 class MockHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         # Clean logging: suppress noisy per-request logs
@@ -611,7 +611,9 @@ class MockHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(raw)))
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+        self.send_header(
+            "Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS"
+        )
         self.send_header("Access-Control-Allow-Headers", "*")
         self.end_headers()
         self.wfile.write(raw)
@@ -619,7 +621,9 @@ class MockHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+        self.send_header(
+            "Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS"
+        )
         self.send_header("Access-Control-Allow-Headers", "*")
         self.end_headers()
 
@@ -627,7 +631,11 @@ class MockHandler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         path = url.path.rstrip("/")
         content_length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+        body = (
+            self.rfile.read(content_length).decode("utf-8")
+            if content_length > 0
+            else "{}"
+        )
         try:
             payload = json.loads(body)
         except Exception:
@@ -635,25 +643,31 @@ class MockHandler(BaseHTTPRequestHandler):
 
         # 1. Supabase Auth
         if path == "/supabase/auth/v1/token":
-            return self._send_json(200, {
-                "access_token": "mock-access-token-utsavai-123456",
-                "token_type": "bearer",
-                "expires_in": 3600,
-                "refresh_token": "mock-refresh-token",
-                "user": DEMO_USER,
-            })
+            return self._send_json(
+                200,
+                {
+                    "access_token": "mock-access-token-utsavai-123456",
+                    "token_type": "bearer",
+                    "expires_in": 3600,
+                    "refresh_token": "mock-refresh-token",
+                    "user": DEMO_USER,
+                },
+            )
 
         # 2. PlanAI Proposals Generate
         if "/ai/conversations" in path and path.endswith("/messages"):
-            return self._send_json(200, {
-                "id": "m0000000-0000-0000-0000-000000000001",
-                "conversation_id": "c0000000-0000-0000-0000-000000000001",
-                "proposal_id": "prop-plan-001",
-                "role": "assistant",
-                "content": "I have created a majestic 3-day royal schedule at Rambagh Palace featuring Mehendi, Sangeet, Vedic Pheras, and Grand Reception with matching preparation milestones.",
-                "validation_status": "valid",
-                "created_at": "2026-11-01T14:00:00Z",
-            })
+            return self._send_json(
+                200,
+                {
+                    "id": "m0000000-0000-0000-0000-000000000001",
+                    "conversation_id": "c0000000-0000-0000-0000-000000000001",
+                    "proposal_id": "prop-plan-001",
+                    "role": "assistant",
+                    "content": "I have created a majestic 3-day royal schedule at Rambagh Palace featuring Mehendi, Sangeet, Vedic Pheras, and Grand Reception with matching preparation milestones.",
+                    "validation_status": "valid",
+                    "created_at": "2026-11-01T14:00:00Z",
+                },
+            )
 
         # 3. Create Event
         if path == "/api/v1/events":
@@ -664,13 +678,16 @@ class MockHandler(BaseHTTPRequestHandler):
 
         # 4. Adaptive replanning proposal interpretation
         if path.endswith("/change-proposals/interpret"):
-            return self._send_json(200, {
-                "summary": "Request to expand guest count from 300 to 350 for the Jaipur Royal celebration.",
-                "identified_changes": {
-                    "expected_guest_count": 350,
+            return self._send_json(
+                200,
+                {
+                    "summary": "Request to expand guest count from 300 to 350 for the Jaipur Royal celebration.",
+                    "identified_changes": {
+                        "expected_guest_count": 350,
+                    },
+                    "confidence": 0.98,
                 },
-                "confidence": 0.98,
-            })
+            )
 
         # Default fallback for unhandled POST
         return self._send_json(200, {"status": "ok", "message": "action accepted"})
@@ -678,7 +695,6 @@ class MockHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         url = urlparse(self.path)
         path = url.path.rstrip("/")
-        query = parse_qs(url.query)
 
         # 1. Supabase Auth User
         if path == "/supabase/auth/v1/user":
@@ -686,7 +702,9 @@ class MockHandler(BaseHTTPRequestHandler):
 
         # 2. Health & Meta
         if path == "/api/v1/health":
-            return self._send_json(200, {"status": "ok", "service": "utsavai-api", "version": "0.1.0"})
+            return self._send_json(
+                200, {"status": "ok", "service": "utsavai-api", "version": "0.1.0"}
+            )
         if path == "/api/v1/meta":
             return self._send_json(200, DEMO_META)
         if path == "/api/v1/me":
@@ -704,18 +722,21 @@ class MockHandler(BaseHTTPRequestHandler):
 
         # 5. PlanAI Conversations
         if path == f"/api/v1/events/{EVENT_ID}/ai/conversations":
-            return self._send_json(200, {
-                "items": [
-                    {
-                        "id": "c0000000-0000-0000-0000-000000000001",
-                        "event_id": EVENT_ID,
-                        "user_id": USER_ID,
-                        "title": "Jaipur Royal Wedding Schedule & Logistics",
-                        "created_at": "2026-11-01T10:00:00Z",
-                        "updated_at": "2026-11-01T14:00:00Z",
-                    }
-                ]
-            })
+            return self._send_json(
+                200,
+                {
+                    "items": [
+                        {
+                            "id": "c0000000-0000-0000-0000-000000000001",
+                            "event_id": EVENT_ID,
+                            "user_id": USER_ID,
+                            "title": "Jaipur Royal Wedding Schedule & Logistics",
+                            "created_at": "2026-11-01T10:00:00Z",
+                            "updated_at": "2026-11-01T14:00:00Z",
+                        }
+                    ]
+                },
+            )
 
         # 6. BudgetAI
         if path == f"/api/v1/events/{EVENT_ID}/budget":
@@ -737,23 +758,29 @@ class MockHandler(BaseHTTPRequestHandler):
         if path == f"/api/v1/events/{EVENT_ID}/vendors":
             return self._send_json(200, VENDORS)
         if path == f"/api/v1/events/{EVENT_ID}/vendors/summary":
-            return self._send_json(200, {
-                "total_vendors": 3,
-                "booked_vendors": 2,
-                "shortlisted_vendors": 1,
-                "total_committed_quotes": "1950000.00",
-                "currency": "INR",
-            })
+            return self._send_json(
+                200,
+                {
+                    "total_vendors": 3,
+                    "booked_vendors": 2,
+                    "shortlisted_vendors": 1,
+                    "total_committed_quotes": "1950000.00",
+                    "currency": "INR",
+                },
+            )
 
         # 9. GiftCircle
         if path == f"/api/v1/events/{EVENT_ID}/gifts":
             return self._send_json(200, GIFTS)
         if path == f"/api/v1/events/{EVENT_ID}/gifts/settings":
-            return self._send_json(200, {
-                "share_token": SHARE_TOKEN,
-                "is_public": True,
-                "welcome_message": PUBLIC_REGISTRY["welcome_message"],
-            })
+            return self._send_json(
+                200,
+                {
+                    "share_token": SHARE_TOKEN,
+                    "is_public": True,
+                    "welcome_message": PUBLIC_REGISTRY["welcome_message"],
+                },
+            )
         if path == f"/api/v1/public/registries/{SHARE_TOKEN}":
             return self._send_json(200, PUBLIC_REGISTRY)
 
@@ -778,4 +805,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-

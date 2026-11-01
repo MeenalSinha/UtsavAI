@@ -14,9 +14,9 @@ os.environ.setdefault("SUPABASE_URL", "https://placeholder.supabase.co")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "apps" / "api"))
 
-from app.core.config import get_settings
-from app.database.pool import Database
-from app.main import create_app
+from app.core.config import get_settings  # noqa: E402
+from app.database.pool import Database  # noqa: E402
+from app.main import create_app  # noqa: E402
 
 settings = get_settings()
 schema = create_app(settings, database=Database(settings)).openapi()

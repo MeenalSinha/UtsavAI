@@ -20,9 +20,9 @@ class EventTypeConfig:
 # Event categories are configuration, never a database enum (docs/DATABASE_SCHEMA.md 13).
 EVENT_TYPES: tuple[EventTypeConfig, ...] = (
     EventTypeConfig("wedding", "Wedding", True),
-    EventTypeConfig("birthday", "Birthday", False),
-    EventTypeConfig("anniversary", "Anniversary", False),
-    EventTypeConfig("community", "Community event", False),
+    EventTypeConfig("birthday", "Birthday", True),
+    EventTypeConfig("anniversary", "Anniversary", True),
+    EventTypeConfig("community", "Community event", True),
 )
 ENABLED_EVENT_TYPES: frozenset[str] = frozenset(t.key for t in EVENT_TYPES if t.enabled)
 

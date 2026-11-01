@@ -18,6 +18,7 @@ import type { VendorCreatePayload, VendorDto, VendorSummaryDto, VendorUpdatePayl
 import { QuoteComparisonView } from "./quote-comparison-view";
 import { VendorDetailDialog } from "./vendor-detail-dialog";
 import { VendorFormDialog } from "./vendor-form-dialog";
+import { VendorStatusBadge } from "./vendor-status-badge";
 
 interface VendorWorkspaceProps {
   eventId: string;
@@ -86,23 +87,6 @@ export function VendorWorkspace({ eventId, currency = "INR" }: VendorWorkspacePr
 
   // Derive unique categories for the filter
   const categories = summary?.categories.map((c) => c.category) || [];
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "booked":
-        return <Badge className="bg-emerald-600 text-white">Booked</Badge>;
-      case "shortlisted":
-        return <Badge className="bg-purple-600 text-white">Shortlisted</Badge>;
-      case "quoted":
-        return <Badge className="bg-blue-600 text-white">Quoted</Badge>;
-      case "contacted":
-        return <Badge variant="outline" className="text-amber-600 border-amber-300">Contacted</Badge>;
-      case "declined":
-        return <Badge variant="muted" className="text-destructive border-destructive/20 bg-destructive/10">Declined</Badge>;
-      default:
-        return <Badge variant="secondary">Identified</Badge>;
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -260,7 +244,7 @@ export function VendorWorkspace({ eventId, currency = "INR" }: VendorWorkspacePr
                         </span>
                         <h4 className="font-serif text-lg font-bold text-foreground mt-0.5">{v.name}</h4>
                       </div>
-                      {getStatusBadge(v.status)}
+                      <VendorStatusBadge status={v.status} />
                     </div>
 
                     <div className="space-y-1.5 text-xs text-muted-foreground">

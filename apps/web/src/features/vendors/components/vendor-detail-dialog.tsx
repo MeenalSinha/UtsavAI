@@ -15,19 +15,12 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency, formatDate } from "@/lib/format";
 import { routes } from "@/config/routes";
 import { vendorService } from "../services/vendor-service";
 import type { QuoteStatus, VendorDetailDto, VendorDto, VendorQuoteCreatePayload, VendorQuoteDto, VendorQuoteUpdatePayload } from "../types";
 import { QuoteFormDialog } from "./quote-form-dialog";
-
-function formatDate(iso: string | null | undefined): string {
-  if (!iso) return "—";
-  try {
-    return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
-  } catch {
-    return iso;
-  }
-}
+import { QuoteStatusBadge, VendorStatusBadge } from "./vendor-status-badge";
 
 interface VendorDetailDialogProps {
   open: boolean;
@@ -87,38 +80,6 @@ export function VendorDetailDialog({
     onVendorUpdated();
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "booked":
-        return <Badge className="bg-emerald-600 text-white hover:bg-emerald-700">Booked</Badge>;
-      case "shortlisted":
-        return <Badge className="bg-purple-600 text-white hover:bg-purple-700">Shortlisted</Badge>;
-      case "quoted":
-        return <Badge className="bg-blue-600 text-white hover:bg-blue-700">Quoted</Badge>;
-      case "contacted":
-        return <Badge variant="outline" className="text-amber-600 border-amber-300">Contacted</Badge>;
-      case "declined":
-        return <Badge variant="muted" className="text-destructive border-destructive/20 bg-destructive/10">Declined</Badge>;
-      default:
-        return <Badge variant="secondary">Identified</Badge>;
-    }
-  };
-
-  const getQuoteBadge = (status: string) => {
-    switch (status) {
-      case "accepted":
-        return <Badge className="bg-emerald-600 text-white">Accepted</Badge>;
-      case "shortlisted":
-        return <Badge className="bg-purple-600 text-white">Shortlisted</Badge>;
-      case "rejected":
-        return <Badge variant="muted" className="text-destructive border-destructive/20 bg-destructive/10">Rejected</Badge>;
-      case "expired":
-        return <Badge variant="outline" className="text-muted-foreground border-border">Expired</Badge>;
-      default:
-        return <Badge variant="outline" className="text-blue-600 border-blue-200">Received</Badge>;
-    }
-  };
-
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -130,7 +91,7 @@ export function VendorDetailDialog({
                 <DialogDescription className="mt-1 flex items-center gap-2">
                   <span className="font-medium text-foreground">{vendor.category}</span>
                   <span>•</span>
-                  {getStatusBadge(vendor.status)}
+                  <VendorStatusBadge status={vendor.status} />
                 </DialogDescription>
               </div>
               <div className="flex items-center gap-2">
@@ -250,10 +211,11 @@ export function VendorDetailDialog({
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div>
                             <span className="text-xl font-bold font-serif text-primary">
-                              ₹{parseFloat(q.amount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                              {formatCurrency(q.amount, q.currency)}
                             </span>
-                            <span className="ml-2 text-xs text-muted-foreground">{q.currency}</span>
-                            <div className="mt-1">{getQuoteBadge(q.status)}</div>
+                            <div className="mt-1">
+                              <QuoteStatusBadge status={q.status} />
+                            </div>
                           </div>
                           <div className="flex items-center gap-1.5">
                             <Button

@@ -60,7 +60,9 @@ class HostUser(HttpUser):
 
     @task(3)
     def get_budget_summary(self) -> None:
-        self.client.get(f"/api/v1/events/{self.event_id}/budget/summary", headers=self.headers)
+        self.client.get(
+            f"/api/v1/events/{self.event_id}/budget/summary", headers=self.headers
+        )
 
     @task(2)
     def get_timeline_tasks(self) -> None:
@@ -72,4 +74,6 @@ class HostUser(HttpUser):
 
     @task(1)
     def get_change_proposals(self) -> None:
-        self.client.get(f"/api/v1/events/{self.event_id}/change-proposals", headers=self.headers)
+        self.client.get(
+            f"/api/v1/events/{self.event_id}/change-proposals", headers=self.headers
+        )

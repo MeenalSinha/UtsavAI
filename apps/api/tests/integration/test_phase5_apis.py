@@ -76,7 +76,7 @@ def test_giftcircle_full_lifecycle(client, make_user):
             "gift_mode": "group",
             "target_amount": 100000.0,
             "currency": "INR",
-            "priority": "must_have",
+            "priority": "high_priority",
         },
         headers=host.headers,
     )
@@ -188,13 +188,13 @@ def test_giftcircle_full_lifecycle(client, make_user):
     verify_res = client.post(
         f"{BASE}/events/{event_id}/gift-contributions/{contrib_id}/confirm",
         json={
-            "verification_method": "offline_cash",
+            "verification_method": "host_manual_confirmation",
             "confirmation_note": "Received cash envelope at wedding reception",
         },
         headers=host.headers,
     )
     assert verify_res.status_code == 200
-    assert verify_res.json()["status"] == "confirmed"
+    assert verify_res.json()["status"] == "verified"
 
     # 14. Host registry overview shows accurate totals
     overview_res = client.get(

@@ -19,18 +19,17 @@ def test_giftcircle_full_lifecycle(client, make_user):
     assert res.status_code == 201
     event_id = res.json()["id"]
 
-    # 2. Host creates registry
-    reg_res = client.post(
+    # 2. Host creates / updates registry settings
+    reg_res = client.put(
         f"{BASE}/events/{event_id}/gift-registry",
         json={
             "title": "Aarav & Meera Wedding Wishlist",
-            "welcome_message": "Thank you for celebrating with us!",
-            "delivery_address": "123 Heritage Lane, Jaipur",
+            "is_public": True,
             "allow_group_gifting": True,
         },
         headers=host.headers,
     )
-    assert reg_res.status_code == 201
+    assert reg_res.status_code == 200
     reg_data = reg_res.json()
     assert reg_data["title"] == "Aarav & Meera Wedding Wishlist"
     assert reg_data["allow_group_gifting"] is True
@@ -44,21 +43,21 @@ def test_giftcircle_full_lifecycle(client, make_user):
         f"{BASE}/events/{event_id}/gift-registry/share-link",
         headers=host.headers,
     )
-    assert link_res.status_code == 201
-    share_token = link_res.json()["share_token"]
+    assert link_res.status_code == 200
+    share_token = link_res.json()["raw_token"]
     assert len(share_token) > 20
 
     # 5. Add Individual Gift Item
     item1_res = client.post(
-        f"{BASE}/events/{event_id}/gift-registry/items",
+        f"{BASE}/events/{event_id}/gift-items",
         json={
-            "name": "Espresso Machine",
+            "title": "Espresso Machine",
             "description": "Compact dual-boiler coffee maker",
-            "item_type": "physical",
+            "item_type": "product",
             "gift_mode": "individual",
             "target_amount": 45000.0,
             "currency": "INR",
-            "priority": "high",
+            "priority": "important",
         },
         headers=host.headers,
     )
@@ -69,15 +68,15 @@ def test_giftcircle_full_lifecycle(client, make_user):
 
     # 6. Add Group Gift Item
     item2_res = client.post(
-        f"{BASE}/events/{event_id}/gift-registry/items",
+        f"{BASE}/events/{event_id}/gift-items",
         json={
-            "name": "Udaipur Honeymoon Stay",
+            "title": "Udaipur Honeymoon Stay",
             "description": "3 nights at Lake Palace",
             "item_type": "experience",
             "gift_mode": "group",
             "target_amount": 100000.0,
             "currency": "INR",
-            "priority": "high",
+            "priority": "must_have",
         },
         headers=host.headers,
     )
@@ -91,7 +90,6 @@ def test_giftcircle_full_lifecycle(client, make_user):
     assert public_res.status_code == 200
     pub_data = public_res.json()
     assert pub_data["registry_title"] == "Aarav & Meera Wedding Wishlist"
-    assert pub_data["delivery_address"] == "123 Heritage Lane, Jaipur"
     assert len(pub_data["items"]) == 2
 
     # 8. Public guest reserves individual gift
@@ -112,8 +110,7 @@ def test_giftcircle_full_lifecycle(client, make_user):
     # Verify item is no longer available to other guests
     pub_check = client.get(f"{BASE}/public/registries/{share_token}")
     item1_pub = next(it for it in pub_check.json()["items"] if it["id"] == item1_id)
-    assert item1_pub["is_available"] is False
-    assert item1_pub["reservation_status"] == "reserved"
+    assert item1_pub["is_reserved"] is True
 
     # 9. Duplicate reservation attempt fails
     dup_reserve = client.post(
@@ -135,13 +132,12 @@ def test_giftcircle_full_lifecycle(client, make_user):
     # Verify item is available again
     pub_check2 = client.get(f"{BASE}/public/registries/{share_token}")
     item1_pub2 = next(it for it in pub_check2.json()["items"] if it["id"] == item1_id)
-    assert item1_pub2["is_available"] is True
-    assert item1_pub2["reservation_status"] is None
+    assert item1_pub2["is_reserved"] is False
 
     # 11. Public guest contributes to group gift
     pledge_key = str(uuid.uuid4())
     pledge_res = client.post(
-        f"{BASE}/public/registries/{share_token}/items/{item2_id}/contribute",
+        f"{BASE}/public/registries/{share_token}/items/{item2_id}/contributions",
         json={
             "idempotency_key": pledge_key,
             "guest_alias": "Priya & Friends",
@@ -152,11 +148,11 @@ def test_giftcircle_full_lifecycle(client, make_user):
     assert pledge_res.status_code == 201
     pledge_data = pledge_res.json()
     contrib_id = pledge_data["contribution_id"]
-    assert Decimal(pledge_data["amount"]) == Decimal("40000.00")
+    assert Decimal(str(pledge_data["amount"])) == Decimal("40000.00")
 
     # Idempotent re-submission returns cached response
     pledge_replay = client.post(
-        f"{BASE}/public/registries/{share_token}/items/{item2_id}/contribute",
+        f"{BASE}/public/registries/{share_token}/items/{item2_id}/contributions",
         json={
             "idempotency_key": pledge_key,
             "guest_alias": "Priya & Friends",
@@ -169,7 +165,7 @@ def test_giftcircle_full_lifecycle(client, make_user):
 
     # 12. Attempt to pledge beyond remaining target fails (Remaining is 60,000)
     over_pledge = client.post(
-        f"{BASE}/public/registries/{share_token}/items/{item2_id}/contribute",
+        f"{BASE}/public/registries/{share_token}/items/{item2_id}/contributions",
         json={
             "idempotency_key": str(uuid.uuid4()),
             "guest_alias": "Generous Donor",
@@ -181,7 +177,7 @@ def test_giftcircle_full_lifecycle(client, make_user):
 
     # 13. Host views contributions and verifies offline receipt
     contribs_res = client.get(
-        f"{BASE}/events/{event_id}/gift-registry/contributions",
+        f"{BASE}/events/{event_id}/gift-contributions",
         headers=host.headers,
     )
     assert contribs_res.status_code == 200
@@ -190,26 +186,26 @@ def test_giftcircle_full_lifecycle(client, make_user):
     assert contribs[0]["status"] == "pledged"
 
     verify_res = client.post(
-        f"{BASE}/events/{event_id}/gift-registry/contributions/{contrib_id}/verify",
+        f"{BASE}/events/{event_id}/gift-contributions/{contrib_id}/confirm",
         json={
             "verification_method": "offline_cash",
-            "verification_notes": "Received cash envelope at wedding reception",
+            "confirmation_note": "Received cash envelope at wedding reception",
         },
         headers=host.headers,
     )
     assert verify_res.status_code == 200
-    assert verify_res.json()["status"] == "verified"
+    assert verify_res.json()["status"] == "confirmed"
 
-    # 14. Host overview shows accurate totals
+    # 14. Host registry overview shows accurate totals
     overview_res = client.get(
-        f"{BASE}/events/{event_id}/gift-registry/overview",
+        f"{BASE}/events/{event_id}/gift-registry",
         headers=host.headers,
     )
     assert overview_res.status_code == 200
     ov = overview_res.json()
     assert ov["total_items"] == 2
-    assert Decimal(ov["total_verified"]) == Decimal("40000.00")
-    assert Decimal(ov["total_pledged"]) == Decimal("0.00")
+    assert Decimal(str(ov["total_confirmed_amount"])) == Decimal("40000.00")
+    assert Decimal(str(ov["total_pledged_amount"])) == Decimal("0.00")
 
     # 15. Shared event context includes gift summary
     ctx_res = client.get(f"{BASE}/events/{event_id}/context", headers=host.headers)
@@ -217,7 +213,7 @@ def test_giftcircle_full_lifecycle(client, make_user):
     gift_sum = ctx_res.json()["gift_summary"]
     assert gift_sum is not None
     assert gift_sum["total_items"] == 2
-    assert Decimal(gift_sum["total_contributed"]) == Decimal("40000.00")
+    assert Decimal(str(gift_sum["total_contributed"])) == Decimal("40000.00")
 
     # 16. Revoke share link
     revoke_res = client.delete(

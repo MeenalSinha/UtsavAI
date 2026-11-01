@@ -19,3 +19,4 @@ GiftCircle allows couples to publish wishlists and guests to record gift reserva
 
 ## 6. Limitation of Liability
 In no event shall UtsavAI or its creators be liable for indirect, incidental, special, or consequential damages arising from wedding delays, vendor disputes, currency calculation discrepancies, or reliance on assistive AI suggestions.
+

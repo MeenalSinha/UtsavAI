@@ -18,3 +18,4 @@ In the event of database corruption or primary region disaster:
    gcloud run services update utsavai-api --region asia-south1
    ```
 6. Execute `/api/v1/health/ready` to verify connectivity.
+

@@ -24,3 +24,4 @@ In production (`APP_ENV=production`), logs are emitted in JSON format to stdout:
 
 ## 3. Distributed Tracing & Request IDs
 Every request is stamped with an `X-Request-ID` header. If provided by client (e.g. BFF or reverse proxy), it is propagated; otherwise a secure unique prefix `req_<uuid>` is generated and bound to Python `contextvars`.
+

@@ -24,3 +24,4 @@ curl -f -s "$WEB_URL/ai-disclosure" > /dev/null || exit 1
 
 echo "All production smoke tests PASSED."
 ```
+

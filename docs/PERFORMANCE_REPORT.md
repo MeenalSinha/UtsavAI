@@ -25,3 +25,4 @@ Performance profiling was conducted against FastAPI backend endpoints and Next.j
 - **Prepared Execution:** Supabase pooler configured with `prepare_threshold=None` for optimal transaction-mode connection reuse.
 - **Index Coverage:** Primary foreign keys and frequent lookups (`(event_id, created_at desc)`, `share_token_hash`, `(event_id, status)`) indexed across all 22 tables.
 - **Statement Timeout:** Rigid `statement_timeout=5000` enforced at connection level to prevent unindexed runaway queries from exhausting connection pools.
+

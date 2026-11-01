@@ -16,3 +16,4 @@
 1. Immediately invoke Cloud Armor / WAF to restrict write operations.
 2. Verify role attributes: `SELECT rolname, rolsuper, rolbypassrls FROM pg_roles WHERE rolname = 'utsavai_app'`. Ensure `rolbypassrls` is `false`.
 3. Check `public.audit_logs` for unusual tenant access patterns.
+

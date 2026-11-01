@@ -51,3 +51,4 @@ uv run python ../../scripts/seed_demo_data.py --clean
 6. **Adaptive Planning Engine:**
    - Candidate Change Proposal: Increase guest count from 300 to 350.
    - Precalculated downstream impacts on catering budget, venue capacity warning, and suggested option.
+

@@ -19,3 +19,4 @@ When AI features are engaged (PlanAI, BudgetAI suggestions, TimelineAI, and Adap
 
 ## 5. Contact and Data Rights
 You have the right to inspect, export, or permanently delete your account and associated event data. For privacy inquiries or deletion requests, contact our privacy officer at `privacy@utsavai.example.com`.
+

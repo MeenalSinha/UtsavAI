@@ -20,3 +20,4 @@
 - [x] Dockerfile builds cleanly with non-root runtime users.
 - [x] Synthetic demo seeding script verified (`scripts/seed_demo_data.py`).
 - [x] Backup and incident runbooks documented.
+

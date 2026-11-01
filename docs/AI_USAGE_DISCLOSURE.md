@@ -21,3 +21,4 @@ In environments where AI capabilities are disabled or API quotas are unavailable
 
 ## 4. Data Privacy Safeguards
 We do not use customer wedding data or guest lists to train public foundation models. Only minimal context required for the specific request (e.g. event city, function list, guest count) is included in prompts.
+

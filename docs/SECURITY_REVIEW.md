@@ -23,3 +23,4 @@
 - **Operation Allow-List:** Only 4 registered operations (`op_shift_task_due_dates`, `op_extend_gift_registry_expiry`, `op_flag_budget_for_review`, `op_mark_vendor_quotes_review`) are executable.
 - **Tenant Verification:** Before applying any secondary operation, all entity references (e.g. `registry_id`) are queried against `event_id` in the active transaction. Cross-event tampering attempts are immediately rejected.
 - **Optimistic Concurrency:** Proposals track `base_revision`. Concurrent modifications raise `HTTP 409 Conflict`, marking conflicting proposals `stale`.
+

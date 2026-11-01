@@ -20,3 +20,4 @@ UtsavAI has been developed and evaluated against the Web Content Accessibility G
 - **Landmarks:** Distinct `<header>`, `<nav>`, `<main>`, `<aside>`, and `<footer>` landmarks defined on all pages.
 - **Form Labels:** Every input field possesses an explicitly bound `<Label htmlFor={...}>` or `aria-label`.
 - **Alternative Text:** Decorative icons carry `aria-hidden="true"`. Data visualizations include structured tables and summarized card representations as textual alternatives.
+

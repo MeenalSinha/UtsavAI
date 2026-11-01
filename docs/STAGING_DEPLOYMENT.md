@@ -26,3 +26,4 @@ The staging environment mirrors production architecture and configuration while 
    ```bash
    DATABASE_URL="$STAGING_DATABASE_URL" python scripts/seed_demo_data.py
    ```
+

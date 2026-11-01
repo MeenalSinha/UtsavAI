@@ -1,3 +1,8 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === "production";
 
@@ -32,6 +37,10 @@ const nextConfig = {
   poweredByHeader: false,
   output: process.env.DOCKER_BUILD ? "standalone" : undefined,
   eslint: { ignoreDuringBuilds: false },
+  webpack: (config) => {
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
+    return config;
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

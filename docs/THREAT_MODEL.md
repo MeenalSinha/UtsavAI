@@ -8,3 +8,4 @@
 | **Information Disclosure** | Database error dumps leaking schema/credentials; PII leakage in server logs | Centralized error handler returning sanitized `{ "error": { "code", "message", "request_id" } }` envelopes. Structured JSON logging with automated credential and token redaction. |
 | **Denial of Service** | Infinite dependency cycles in task scheduling; runaway LLM generation; DB connection starvation | Kahn's topological sort cycle detection preventing task circularity; bounded statement timeouts (`statement_timeout=5000`); connection pool limits (`min=2, max=10`); fallback deterministic explainer. |
 | **Elevation of Privilege** | Normal event editor accepting a proposal or altering event ownership | RLS policies enforce `owner` role for destructive actions and proposal acceptance. Runtime database user is strictly `NOSUPERUSER NOBYPASSRLS`. |
+

@@ -37,3 +37,4 @@ UtsavAI is now a production-grade, release-ready system operating across six uni
 - **Synthetic 3-Day Jaipur Wedding:** Automated seed and cleanup script (`scripts/seed_demo_data.py`) creating a complete Aarav & Meera royal celebration across all six modules.
 - **Load Testing Profile:** Locust benchmark suite (`tests/load/locustfile.py`) simulating Host, Public Guest, and HealthMonitor concurrent traffic.
 - **Liveness & Readiness Probes:** Distinct `/api/v1/health` (version metadata) and `/api/v1/health/ready` (live database connectivity and role check) endpoints.
+

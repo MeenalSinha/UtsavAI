@@ -36,3 +36,4 @@ All notable changes to UtsavAI are documented here.
 ## [v0.1.0] - 2026-11-01 (Phase 1)
 ### Added
 - Foundation architecture, Supabase Auth, PostgreSQL RLS, Next.js App Router, FastAPI backend.
+

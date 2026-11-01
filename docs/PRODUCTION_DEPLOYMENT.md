@@ -70,3 +70,4 @@ curl -I https://api.utsavai.com/api/v1/health
 curl -I https://api.utsavai.com/api/v1/health/ready
 ```
 Both endpoints must return `HTTP 200 OK`.
+

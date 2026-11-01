@@ -20,7 +20,7 @@ def add_member(admin, event_id, user_id, role, status="active"):
 
 
 # ------------------------------------------------------------------ Budget Lifecycle & Summary
-def test_budget_lifecycle_and_summary(client, make_user):
+def test_budget_lifecycle_and_summary(client, make_user, admin):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     assert res.status_code == 201
@@ -89,7 +89,7 @@ def test_budget_lifecycle_and_summary(client, make_user):
     assert Decimal(str(summary["projected_headroom"])) == Decimal("1500000.00")
 
 
-def test_category_deletion_protection_with_active_expenses(client, make_user):
+def test_category_deletion_protection_with_active_expenses(client, make_user, admin):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
@@ -122,7 +122,7 @@ def test_category_deletion_protection_with_active_expenses(client, make_user):
 
 
 # ------------------------------------------------------------------ Timeline & Tasks
-def test_task_lifecycle_and_dependencies(client, make_user):
+def test_task_lifecycle_and_dependencies(client, make_user, admin):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
@@ -182,6 +182,13 @@ def test_task_lifecycle_and_dependencies(client, make_user):
     assert patch_res.json()["status"] == "done"
     assert patch_res.json()["completed_at"] is not None
 
+    # Remove dependency
+    del_dep = client.delete(
+        f"{BASE}/events/{event_id}/tasks/{t2['id']}/dependencies/{t1['id']}",
+        headers=u.headers,
+    )
+    assert del_dep.status_code == 204
+
     # Check timeline summary
     summary_res = client.get(f"{BASE}/events/{event_id}/timeline/summary", headers=u.headers)
     assert summary_res.status_code == 200
@@ -192,7 +199,7 @@ def test_task_lifecycle_and_dependencies(client, make_user):
 
 
 # ------------------------------------------------------------------ Shared Event Context Integration
-def test_shared_event_context_includes_budget_and_timeline(client, make_user):
+def test_shared_event_context_includes_budget_and_timeline(client, make_user, admin):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
@@ -219,7 +226,7 @@ def test_shared_event_context_includes_budget_and_timeline(client, make_user):
 
 
 # ------------------------------------------------------------------ AI Budget and Timeline Proposals
-def test_ai_budget_proposal_generation_and_acceptance(client, make_user, app):
+def test_ai_budget_proposal_generation_and_acceptance(client, make_user, admin, app):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]
@@ -288,7 +295,7 @@ def test_ai_budget_proposal_generation_and_acceptance(client, make_user, app):
     assert "decor_styling" in cat_keys
 
 
-def test_ai_timeline_proposal_generation_and_acceptance(client, make_user, app):
+def test_ai_timeline_proposal_generation_and_acceptance(client, make_user, admin, app):
     u = make_user("host")
     res = client.post(f"{BASE}/events", json=event_payload(), headers=u.headers)
     event_id = res.json()["id"]

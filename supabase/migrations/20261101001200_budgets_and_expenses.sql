@@ -208,3 +208,7 @@ create trigger tasks_after_insert_trigger
   after insert or delete on public.tasks
   for each row execute function app.task_touch_event();
 
+-- Soft-delete support for task_dependencies so runtime role utsavai_app never requires DELETE
+alter table public.task_dependencies add column if not exists is_deleted boolean not null default false;
+create index if not exists task_dependencies_active_idx on public.task_dependencies (task_id, depends_on_task_id) where not is_deleted;
+

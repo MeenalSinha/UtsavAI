@@ -138,6 +138,11 @@ def remove_dependency(
     response_model=TimelineSummaryOut,
     summary="Get timeline progress summary and milestone metrics",
 )
+@router.get(
+    "/events/{event_id}/tasks/summary",
+    response_model=TimelineSummaryOut,
+    include_in_schema=False,
+)
 def get_timeline_summary(
     event_id: uuid.UUID,
     principal: PrincipalDep,
@@ -151,6 +156,12 @@ def get_timeline_summary(
     response_model=TimelineProposalOut,
     status_code=status.HTTP_201_CREATED,
     summary="Generate AI schedule and task preparation proposals",
+)
+@router.post(
+    "/events/{event_id}/tasks/ai/generate",
+    response_model=TimelineProposalOut,
+    status_code=status.HTTP_201_CREATED,
+    include_in_schema=False,
 )
 async def generate_timeline_proposal(
     event_id: uuid.UUID,
@@ -166,6 +177,11 @@ async def generate_timeline_proposal(
     "/events/{event_id}/timeline/ai/proposals/{proposal_id}/accept",
     response_model=TimelineProposalOut,
     summary="Accept selected timeline tasks and dependencies",
+)
+@router.post(
+    "/events/{event_id}/tasks/ai/proposals/{proposal_id}/accept",
+    response_model=TimelineProposalOut,
+    include_in_schema=False,
 )
 def accept_timeline_proposal(
     event_id: uuid.UUID,

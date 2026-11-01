@@ -184,6 +184,7 @@ def list_event_dependencies(conn: Connection[DictRow], event_id: uuid.UUID) -> S
           from public.task_dependencies d
           join public.tasks t on t.id = d.task_id
          where t.event_id = %s
+           and not coalesce(d.is_deleted, false)
         """,
         (event_id,),
     ).fetchall()
@@ -195,6 +196,7 @@ def get_task_dependencies(conn: Connection[DictRow], task_id: uuid.UUID) -> Sequ
         select depends_on_task_id
           from public.task_dependencies
          where task_id = %s
+           and not coalesce(is_deleted, false)
         """,
         (task_id,),
     ).fetchall()
@@ -204,9 +206,9 @@ def get_task_dependencies(conn: Connection[DictRow], task_id: uuid.UUID) -> Sequ
 def add_dependency(conn: Connection[DictRow], task_id: uuid.UUID, depends_on_task_id: uuid.UUID) -> None:
     conn.execute(
         """
-        insert into public.task_dependencies (task_id, depends_on_task_id)
-        values (%s, %s)
-        on conflict do nothing
+        insert into public.task_dependencies (task_id, depends_on_task_id, is_deleted)
+        values (%s, %s, false)
+        on conflict (task_id, depends_on_task_id) do update set is_deleted = false
         """,
         (task_id, depends_on_task_id),
     )
@@ -215,9 +217,11 @@ def add_dependency(conn: Connection[DictRow], task_id: uuid.UUID, depends_on_tas
 def remove_dependency(conn: Connection[DictRow], task_id: uuid.UUID, depends_on_task_id: uuid.UUID) -> bool:
     res = conn.execute(
         """
-        delete from public.task_dependencies
+        update public.task_dependencies
+           set is_deleted = true
          where task_id = %s
            and depends_on_task_id = %s
+           and not coalesce(is_deleted, false)
         """,
         (task_id, depends_on_task_id),
     )

@@ -24,11 +24,11 @@ begin
 end
 $$;
 
--- Explicit grants for the application runtime role utsavai_app
+-- Explicit grants for the application runtime role utsavai_app (strictly no DELETE)
 grant select, insert, update on public.budgets to utsavai_app;
-grant select, insert, update, delete on public.budget_categories to utsavai_app;
+grant select, insert, update on public.budget_categories to utsavai_app;
 grant select, insert, update on public.expenses to utsavai_app;
-grant delete on public.task_dependencies to utsavai_app;
+grant update on public.task_dependencies to utsavai_app;
 
 -- ---------------------------------------------------------------- budgets
 create policy budgets_select on public.budgets
@@ -74,14 +74,6 @@ create policy budget_categories_update on public.budget_categories
        and app.is_event_member(b.event_id, array['owner', 'editor'])
   ));
 
-create policy budget_categories_delete on public.budget_categories
-  for delete to utsavai_app
-  using (exists (
-    select 1 from public.budgets b
-     where b.id = budget_categories.budget_id
-       and app.is_event_member(b.event_id, array['owner', 'editor'])
-  ));
-
 -- ---------------------------------------------------------------- expenses
 create policy expenses_select on public.expenses
   for select to utsavai_app
@@ -99,10 +91,15 @@ create policy expenses_update on public.expenses
   using (app.is_event_member(event_id, array['owner', 'editor']))
   with check (app.is_event_member(event_id, array['owner', 'editor']));
 
--- ---------------------------------------------------------------- task_dependencies (allow delete)
-create policy task_dependencies_delete on public.task_dependencies
-  for delete to utsavai_app
+-- ---------------------------------------------------------------- task_dependencies (allow update for soft-delete)
+create policy task_dependencies_update on public.task_dependencies
+  for update to utsavai_app
   using (exists (
+    select 1 from public.tasks t
+     where t.id = task_dependencies.task_id
+       and app.is_event_member(t.event_id, array['owner', 'editor'])
+  ))
+  with check (exists (
     select 1 from public.tasks t
      where t.id = task_dependencies.task_id
        and app.is_event_member(t.event_id, array['owner', 'editor'])

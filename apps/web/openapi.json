@@ -2335,6 +2335,7 @@
             "title": "Notes"
           },
           "sort_order": {
+            "default": 0,
             "title": "Sort Order",
             "type": "integer"
           },
@@ -2360,11 +2361,6 @@
           "id",
           "event_id",
           "name",
-          "starts_at",
-          "ends_at",
-          "location_name",
-          "notes",
-          "sort_order",
           "created_at",
           "updated_at"
         ],

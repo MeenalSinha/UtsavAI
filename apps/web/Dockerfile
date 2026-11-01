@@ -10,10 +10,10 @@ RUN npm ci --include=dev
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ARG NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
-ARG NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-anon-key-for-build-0000
+ARG NEXT_PUBLIC_SUPABASE_URL=https://grzphxxokdqjymziealc.supabase.co
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_PDVH-M-M14CzBtUljHvtgA_05E0uBDb
 ARG NEXT_PUBLIC_APP_ENV=production
-ARG API_BASE_URL=https://api-placeholder.utsavai.internal
+ARG API_BASE_URL=https://utsavai-backend-457551806052.asia-south1.run.app
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV

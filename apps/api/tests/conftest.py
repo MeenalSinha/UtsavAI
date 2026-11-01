@@ -66,7 +66,7 @@ def build_settings(**overrides: Any) -> Settings:
         "cors_allowed_origins": "http://localhost:3000",
     }
     values.update(overrides)
-    return Settings(_env_file=None, **values)  # type: ignore[call-arg]
+    return Settings(_env_file=None, **values)
 
 
 @pytest.fixture

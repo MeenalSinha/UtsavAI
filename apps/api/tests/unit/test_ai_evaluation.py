@@ -59,7 +59,7 @@ def make_dummy_context(guest_count: int = 300, style: str = "Traditional") -> Sh
         ("Incomplete Requirements", 0, "Personalized"),
     ],
 )
-def test_evaluation_dataset_contexts(context_name: str, guest_count: int, style: str):
+def test_evaluation_dataset_contexts(context_name: str, guest_count: int, style: str) -> None:
     ctx = make_dummy_context(guest_count=guest_count, style=style)
     payload = PlanProposalPayload(
         summary=f"Plan tailored for {context_name}.",
@@ -194,5 +194,5 @@ def test_prompt_injection_safety_handling():
             ProposedTask(
                 client_ref="t_bad",
                 title=inj,
-                priority="superuser",  # type: ignore[arg-type]
+                priority="superuser",
             )

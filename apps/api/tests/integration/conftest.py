@@ -77,7 +77,7 @@ def make_user(admin: psycopg.Connection, make_token: Callable[..., str]) -> Call
 
 
 @pytest.fixture
-def db_settings():  # type: ignore[no-untyped-def]
+def db_settings():
     return build_settings(
         database_url=os.environ.get("TEST_DATABASE_URL", RUNTIME_URL_DEFAULT),
         db_pool_min_size=1,

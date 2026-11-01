@@ -52,3 +52,4 @@ export function formatCurrency(
     return `₹${num.toFixed(2)}`;
   }
 }
+

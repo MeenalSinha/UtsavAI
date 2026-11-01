@@ -67,7 +67,7 @@ def test_alg_none_rejected(verifier):
             "exp": now + 60,
             "role": "authenticated",
         },
-        key=None,
+        key=None,  # type: ignore[arg-type]
         algorithm="none",
     )
     with pytest.raises(UnauthenticatedError):

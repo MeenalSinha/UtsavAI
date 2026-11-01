@@ -20,9 +20,9 @@ from app.modules.events.context import (
     ContextPermissions,
     ContextPreferences,
     ContextTimelineSummary,
-    FunctionOut,
     SharedEventContext,
 )
+from app.modules.functions.schemas import FunctionOut
 
 
 def _make_context(

@@ -115,11 +115,11 @@ def test_update_cannot_archive_or_change_owner_or_type():
     with pytest.raises(ValidationError, match="DELETE"):
         EventUpdate(status="archived")
     with pytest.raises(ValidationError, match="Extra inputs"):
-        EventUpdate(owner_user_id=str(uuid.uuid4()))
+        EventUpdate(owner_user_id=str(uuid.uuid4()))  # type: ignore[call-arg]
     with pytest.raises(ValidationError, match="Extra inputs"):
-        EventUpdate(event_type="birthday")
+        EventUpdate(event_type="birthday")  # type: ignore[call-arg]
     with pytest.raises(ValidationError, match="Extra inputs"):
-        EventUpdate(revision=99)
+        EventUpdate(revision=99)  # type: ignore[call-arg]
 
 
 def test_update_partial_location_tracks_provided_fields():
@@ -136,7 +136,7 @@ def test_profile_update_rules():
         ProfileUpdate(timezone="Nowhere/Land")
     assert ProfileUpdate(display_name="  Meera ").display_name == "Meera"
     with pytest.raises(ValidationError, match="Extra inputs"):
-        ProfileUpdate(user_id=str(uuid.uuid4()))
+        ProfileUpdate(user_id=str(uuid.uuid4()))  # type: ignore[call-arg]
 
 
 def test_status_lifecycle_is_documented_and_archived_is_terminal():

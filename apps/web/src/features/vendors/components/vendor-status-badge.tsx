@@ -50,3 +50,4 @@ export function QuoteStatusBadge({ status, className }: QuoteStatusBadgeProps) {
       return <Badge variant="secondary" className={className}>Draft</Badge>;
   }
 }
+

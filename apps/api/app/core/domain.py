@@ -89,6 +89,14 @@ class Permission(StrEnum):
     FUNCTION_MANAGE = "function.manage"
     PLAN_GENERATE = "plan.generate"
     PLAN_ACCEPT = "plan.accept"
+    BUDGET_READ = "budget.read"
+    BUDGET_MANAGE = "budget.manage"
+    EXPENSE_READ = "expense.read"
+    EXPENSE_MANAGE = "expense.manage"
+    TASK_READ = "task.read"
+    TASK_MANAGE = "task.manage"
+    BUDGET_PROPOSE = "budget.propose"
+    TIMELINE_PROPOSE = "timeline.propose"
 
 
 ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
@@ -101,9 +109,24 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.FUNCTION_MANAGE,
             Permission.PLAN_GENERATE,
             Permission.PLAN_ACCEPT,
+            Permission.BUDGET_READ,
+            Permission.BUDGET_MANAGE,
+            Permission.EXPENSE_READ,
+            Permission.EXPENSE_MANAGE,
+            Permission.TASK_READ,
+            Permission.TASK_MANAGE,
+            Permission.BUDGET_PROPOSE,
+            Permission.TIMELINE_PROPOSE,
         }
     ),
-    MemberRole.VIEWER: frozenset({Permission.EVENT_READ}),
+    MemberRole.VIEWER: frozenset(
+        {
+            Permission.EVENT_READ,
+            Permission.BUDGET_READ,
+            Permission.EXPENSE_READ,
+            Permission.TASK_READ,
+        }
+    ),
 }
 
 
@@ -113,6 +136,19 @@ class ProposalStatus(StrEnum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
     STALE = "stale"
+
+
+class ProposalType(StrEnum):
+    PLAN = "plan"
+    BUDGET_SUGGESTIONS = "budget_suggestions"
+    TIMELINE = "timeline"
+
+
+class ExpenseStatus(StrEnum):
+    PLANNED = "planned"
+    COMMITTED = "committed"
+    PAID = "paid"
+    CANCELLED = "cancelled"
 
 
 class TaskStatus(StrEnum):

@@ -35,6 +35,11 @@ class NotFoundError(AppError):
     code = "NOT_FOUND"
 
 
+class ConflictError(AppError):
+    status_code = 409
+    code = "CONFLICT"
+
+
 class RevisionConflictError(AppError):
     status_code = 409
     code = "REVISION_CONFLICT"

@@ -4,20 +4,23 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
-from app.core.domain import MemberRole, Permission, role_allows
+from app.core.domain import ExpenseStatus, MemberRole, Permission, TaskStatus, role_allows
 from app.core.errors import NotFoundError
 from app.core.request_context import request_id_var
 from app.core.security import Principal
 from app.database.pool import Database
+from app.modules.budget import repository as budget_repo
 from app.modules.events import repository as events_repo
 from app.modules.events.permissions import require_permission
 from app.modules.functions import repository as functions_repo
 from app.modules.functions.schemas import FunctionOut
 from app.modules.preferences import repository as preferences_repo
+from app.modules.tasks import repository as tasks_repo
 
 
 class ContextLocation(BaseModel):
@@ -64,6 +67,32 @@ class ContextPermissions(BaseModel):
     can_archive: bool
 
 
+class ContextBudgetSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total_limit: Decimal
+    total_allocated: Decimal
+    unallocated_amount: Decimal
+    planned_expenses: Decimal
+    committed_expenses: Decimal
+    paid_expenses: Decimal
+    projected_total: Decimal
+    remaining_after_committed: Decimal
+    projected_headroom: Decimal
+
+
+class ContextTimelineSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total_tasks: int
+    completed_tasks: int
+    pending_tasks: int
+    in_progress_tasks: int
+    blocked_tasks: int
+    overdue_tasks: int
+    completion_percentage: float
+
+
 class SharedEventContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -71,6 +100,8 @@ class SharedEventContext(BaseModel):
     preferences: ContextPreferences
     functions: list[FunctionOut]
     permissions: ContextPermissions
+    budget: ContextBudgetSummary | None = None
+    timeline: ContextTimelineSummary | None = None
 
 
 def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID) -> SharedEventContext:
@@ -129,9 +160,75 @@ def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID)
             can_archive=can_archive,
         )
 
+        # Build Budget context summary
+        budget_row = budget_repo.get_budget(conn, event_id)
+        context_budget: ContextBudgetSummary | None = None
+        if budget_row:
+            total_limit = Decimal(str(budget_row["total_limit"]))
+            categories = budget_repo.list_categories(conn, budget_row["id"])
+            expenses = budget_repo.list_expenses(conn, event_id)
+
+            total_allocated = sum(Decimal(str(c["planned_amount"])) for c in categories)
+            planned_exp = sum(
+                Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.PLANNED.value
+            )
+            committed_exp = sum(
+                Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.COMMITTED.value
+            )
+            paid_exp = sum(
+                Decimal(str(e["amount"])) for e in expenses if e["status"] == ExpenseStatus.PAID.value
+            )
+
+            context_budget = ContextBudgetSummary(
+                total_limit=total_limit,
+                total_allocated=total_allocated,
+                unallocated_amount=total_limit - total_allocated,
+                planned_expenses=planned_exp,
+                committed_expenses=committed_exp,
+                paid_expenses=paid_exp,
+                projected_total=planned_exp + committed_exp + paid_exp,
+                remaining_after_committed=total_limit - (committed_exp + paid_exp),
+                projected_headroom=total_limit - (planned_exp + committed_exp + paid_exp),
+            )
+
+        # Build Timeline context summary
+        tasks = tasks_repo.list_tasks(conn, event_id)
+        context_timeline: ContextTimelineSummary | None = None
+        if tasks:
+            from datetime import UTC, datetime
+
+            now = datetime.now(UTC)
+            total_t = len(tasks)
+            completed_t = sum(1 for t in tasks if t["status"] == TaskStatus.DONE.value)
+            pending_t = sum(1 for t in tasks if t["status"] == TaskStatus.TODO.value)
+            in_prog_t = sum(1 for t in tasks if t["status"] == TaskStatus.IN_PROGRESS.value)
+            blocked_t = sum(1 for t in tasks if t["status"] == TaskStatus.BLOCKED.value)
+            cancelled_t = sum(1 for t in tasks if t["status"] == TaskStatus.CANCELLED.value)
+            overdue_t = sum(
+                1
+                for t in tasks
+                if t["due_at"] is not None
+                and t["due_at"] < now
+                and t["status"] not in (TaskStatus.DONE.value, TaskStatus.CANCELLED.value)
+            )
+            active_t = total_t - cancelled_t
+            pct = round((completed_t / active_t) * 100, 1) if active_t > 0 else 0.0
+
+            context_timeline = ContextTimelineSummary(
+                total_tasks=total_t,
+                completed_tasks=completed_t,
+                pending_tasks=pending_t,
+                in_progress_tasks=in_prog_t,
+                blocked_tasks=blocked_t,
+                overdue_tasks=overdue_t,
+                completion_percentage=pct,
+            )
+
         return SharedEventContext(
             event=event_summary,
             preferences=preferences,
             functions=functions,
             permissions=permissions,
+            budget=context_budget,
+            timeline=context_timeline,
         )

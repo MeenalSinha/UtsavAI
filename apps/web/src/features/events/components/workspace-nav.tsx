@@ -21,6 +21,10 @@ function getModuleHref(key: string, eventId: string): string {
       return routes.eventPreferences(eventId);
     case "functions":
       return routes.eventFunctions(eventId);
+    case "budgetai":
+      return routes.eventBudget(eventId);
+    case "timelineai":
+      return routes.eventTimeline(eventId);
     default:
       return routes.event(eventId);
   }

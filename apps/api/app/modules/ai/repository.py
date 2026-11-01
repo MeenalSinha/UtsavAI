@@ -113,7 +113,7 @@ def insert_proposal(
            schema_version, payload, status, model_id, prompt_version)
         values
           (%s, %s, %s, %s, %s, %s, %s, 'proposed', %s, %s)
-        returning id, event_id, conversation_id, base_revision, schema_version,
+        returning id, event_id, conversation_id, proposal_type, base_revision, schema_version,
                   payload, status, model_id, prompt_version, created_at, accepted_at
         """,
         (
@@ -135,7 +135,7 @@ def insert_proposal(
 def get_proposal(conn: Connection, event_id: uuid.UUID, proposal_id: uuid.UUID) -> dict[str, Any] | None:
     row = conn.execute(
         """
-        select id, event_id, conversation_id, base_revision, schema_version,
+        select id, event_id, conversation_id, proposal_type, base_revision, schema_version,
                payload, status, model_id, prompt_version, created_at, accepted_at
           from public.ai_proposals
          where id = %s and event_id = %s

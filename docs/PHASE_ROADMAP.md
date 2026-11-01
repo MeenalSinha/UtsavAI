@@ -7,16 +7,16 @@
 
 The project will be built in eight implementation phases after this Phase 0 blueprint. Each phase ends with tests, an implementation audit, documentation updates and a Git commit/PR. Do not start a later phase while the current phase has failing critical acceptance tests.
 
-| Phase | Name | Scope | Exit gate |
-|---|---|---|---|
-| **0** | Requirements & Architecture | PRD, MVP boundaries, personas, workflows, modular architecture, schema, APIs, AI, security and testing baseline | All ten documents reviewed for consistency; no application feature code created. |
-| **1** | Project Foundation | Repository setup, Next.js shell, FastAPI shell, environment config, Supabase Auth, PostgreSQL migrations, RLS/runtime identity context, CI | User can authenticate and create/reopen a private event; cross-user/event isolation tests pass. |
-| **2** | Core Event Planning / PlanAI | Event settings/preferences/functions, shared event context, conversation UI, Gemini adapter, structured plan proposal and review/acceptance | User can generate a validated wedding plan and accept selected proposals; AI failure leaves CRUD usable. |
-| **3** | Budget & Timeline Intelligence | Budget/category/expense operations, deterministic summaries, task CRUD, task dependencies, schedule proposals | Financial totals reconcile exactly; dependency cycles are rejected; generated plans remain proposals until accepted. |
-| **4** | VendorConnect | Event-scoped vendors, quotations, comparison and booking-status tracking | Quotes can be entered/compared without implying external verification or payment. |
-| **5** | GiftCircle | Registry management, token generation/revocation, public registry UI, account-free reservation and group pledges, host reconciliation | Public no-login journey passes; concurrent duplicate reservations and over-pledges are prevented; no money is collected. |
-| **6** | Adaptive Planning Engine | Typed change requests, deterministic impact map, AI explanations/options, preview, approval and atomic revision-checked application | A material requirement change previews impacts across modules and applies only after owner approval. |
-| **7** | Finalization & Deployment | Full testing, accessibility, threat review, observability, demo fixtures, documentation, deployment and final audit | Release gates in PRD, security and testing docs all pass. |
+| Phase | Name | Scope | Exit gate | Status |
+|---|---|---|---|---|
+| **0** | Requirements & Architecture | PRD, MVP boundaries, personas, workflows, modular architecture, schema, APIs, AI, security and testing baseline | All ten documents reviewed for consistency; no application feature code created. | **COMPLETED** |
+| **1** | Project Foundation | Repository setup, Next.js shell, FastAPI shell, environment config, Supabase Auth, PostgreSQL migrations, RLS/runtime identity context, CI | User can authenticate and create/reopen a private event; cross-user/event isolation tests pass. | **COMPLETED** |
+| **2** | Core Event Planning / PlanAI | Event settings/preferences/functions, shared event context, conversation UI, Gemini adapter, structured plan proposal and review/acceptance | User can generate a validated wedding plan and accept selected proposals; AI failure leaves CRUD usable. | **COMPLETED** |
+| **3** | Budget & Timeline Intelligence | Budget/category/expense operations, deterministic summaries, task CRUD, task dependencies, schedule proposals | Financial totals reconcile exactly; dependency cycles are rejected; generated plans remain proposals until accepted. | **COMPLETED** |
+| **4** | VendorConnect | Event-scoped vendors, quotations, comparison and booking-status tracking | Quotes can be entered/compared without implying external verification or payment. | Planned |
+| **5** | GiftCircle | Registry management, token generation/revocation, public registry UI, account-free reservation and group pledges, host reconciliation | Public no-login journey passes; concurrent duplicate reservations and over-pledges are prevented; no money is collected. | Planned |
+| **6** | Adaptive Planning Engine | Typed change requests, deterministic impact map, AI explanations/options, preview, approval and atomic revision-checked application | A material requirement change previews impacts across modules and applies only after owner approval. | Planned |
+| **7** | Finalization & Deployment | Full testing, accessibility, threat review, observability, demo fixtures, documentation, deployment and final audit | Release gates in PRD, security and testing docs all pass. | Planned |
 
 ## 2. Phase working rules
 

@@ -12,6 +12,8 @@ export const routes = {
   eventPreferences: (id: string) => `/events/${id}/preferences`,
   eventFunctions: (id: string) => `/events/${id}/functions`,
   eventPlanAi: (id: string) => `/events/${id}/plan-ai`,
+  eventBudget: (id: string) => `/events/${id}/budget`,
+  eventTimeline: (id: string) => `/events/${id}/timeline`,
   profile: "/profile",
 } as const;
 

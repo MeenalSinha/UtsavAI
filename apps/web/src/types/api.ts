@@ -257,5 +257,194 @@ export interface SharedContextDto {
     can_generate_plan: boolean;
     can_archive: boolean;
   };
+  budget?: {
+    total_limit: string;
+    total_allocated: string;
+    unallocated_amount: string;
+    planned_expenses: string;
+    committed_expenses: string;
+    paid_expenses: string;
+    projected_total: string;
+    remaining_after_committed: string;
+    projected_headroom: string;
+  } | null;
+  timeline?: {
+    total_tasks: number;
+    completed_tasks: number;
+    pending_tasks: number;
+    in_progress_tasks: number;
+    blocked_tasks: number;
+    overdue_tasks: number;
+    completion_percentage: number;
+  } | null;
+}
+
+// ---------------------------------------------------------------- Phase 3: Budget
+export interface BudgetDto {
+  id: string;
+  event_id: string;
+  total_limit: string;
+  currency: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BudgetCategoryDto {
+  id: string;
+  budget_id: string;
+  category_key: string;
+  name: string;
+  planned_amount: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+  committed_amount: string;
+  paid_amount: string;
+  projected_amount: string;
+  remaining_amount: string;
+  is_over_budget: boolean;
+}
+
+export type ExpenseStatus = "planned" | "committed" | "paid" | "cancelled";
+
+export interface ExpenseDto {
+  id: string;
+  event_id: string;
+  budget_category_id: string;
+  vendor_id?: string | null;
+  description: string;
+  amount: string;
+  currency: string;
+  expense_date: string;
+  status: ExpenseStatus;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CategorySummaryItemDto {
+  category_id: string;
+  category_key: string;
+  name: string;
+  planned_amount: string;
+  committed_amount: string;
+  paid_amount: string;
+  projected_amount: string;
+  remaining_amount: string;
+  is_over_budget: boolean;
+}
+
+export interface BudgetSummaryDto {
+  currency: string;
+  total_limit: string;
+  total_allocated: string;
+  unallocated_amount: string;
+  planned_expenses: string;
+  committed_expenses: string;
+  paid_expenses: string;
+  cancelled_expenses: string;
+  projected_total: string;
+  remaining_after_committed: string;
+  projected_headroom: string;
+  alerts: string[];
+  category_summaries: CategorySummaryItemDto[];
+}
+
+export interface ProposedCategoryAllocationDto {
+  category_key: string;
+  name: string;
+  percentage: number;
+  suggested_amount: string;
+  notes: string;
+}
+
+export interface BudgetProposalPayloadDto {
+  schema_version: number;
+  summary: string;
+  assumptions: string[];
+  warnings: string[];
+  savings_recommendations: string[];
+  follow_up_questions: string[];
+  proposed_allocations: ProposedCategoryAllocationDto[];
+}
+
+export interface BudgetProposalDto {
+  id: string;
+  event_id: string;
+  conversation_id: string | null;
+  proposal_type: string;
+  status: string;
+  base_revision: number;
+  payload: BudgetProposalPayloadDto;
+  created_at: string;
+  accepted_at: string | null;
+}
+
+// ---------------------------------------------------------------- Phase 3: Timeline & Tasks
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
+export type TaskStatus = "todo" | "in_progress" | "blocked" | "done" | "cancelled";
+export type TaskOrigin = "manual" | "ai_accepted" | "adaptive_accepted";
+
+export interface TaskDto {
+  id: string;
+  event_id: string;
+  function_id: string | null;
+  title: string;
+  description: string | null;
+  due_at: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  assigned_user_id: string | null;
+  origin: TaskOrigin;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+  completed_at: string | null;
+  depends_on_task_ids: string[];
+}
+
+export interface TimelineSummaryDto {
+  total_tasks: number;
+  completed_tasks: number;
+  pending_tasks: number;
+  in_progress_tasks: number;
+  blocked_tasks: number;
+  cancelled_tasks: number;
+  overdue_tasks: number;
+  upcoming_tasks: number;
+  unscheduled_tasks: number;
+  high_priority_tasks: number;
+  completion_percentage: number;
+}
+
+export interface ProposedTaskItemDto {
+  client_ref: string;
+  title: string;
+  description: string | null;
+  due_at: string | null;
+  priority: TaskPriority;
+  function_ref: string | null;
+  depends_on: string[];
+}
+
+export interface TimelineProposalPayloadDto {
+  schema_version: number;
+  summary: string;
+  assumptions: string[];
+  warnings: string[];
+  follow_up_questions: string[];
+  proposed_tasks: ProposedTaskItemDto[];
+}
+
+export interface TimelineProposalDto {
+  id: string;
+  event_id: string;
+  conversation_id: string | null;
+  proposal_type: string;
+  status: string;
+  base_revision: number;
+  payload: TimelineProposalPayloadDto;
+  created_at: string;
+  accepted_at: string | null;
 }
 

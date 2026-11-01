@@ -1,6 +1,618 @@
 {
   "components": {
     "schemas": {
+      "BudgetAcceptRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "base_revision": {
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "selected_category_keys": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Selected Category Keys",
+            "type": "array"
+          }
+        },
+        "required": [
+          "base_revision",
+          "selected_category_keys"
+        ],
+        "title": "BudgetAcceptRequest",
+        "type": "object"
+      },
+      "BudgetCategoryCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "category_key": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Category Key",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "planned_amount": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.00",
+            "title": "Planned Amount"
+          },
+          "sort_order": {
+            "default": 0,
+            "title": "Sort Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "category_key",
+          "name"
+        ],
+        "title": "BudgetCategoryCreate",
+        "type": "object"
+      },
+      "BudgetCategoryOut": {
+        "additionalProperties": false,
+        "properties": {
+          "budget_id": {
+            "format": "uuid",
+            "title": "Budget Id",
+            "type": "string"
+          },
+          "category_key": {
+            "title": "Category Key",
+            "type": "string"
+          },
+          "committed_amount": {
+            "default": "0.00",
+            "title": "Committed Amount",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_over_budget": {
+            "default": false,
+            "title": "Is Over Budget",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "paid_amount": {
+            "default": "0.00",
+            "title": "Paid Amount",
+            "type": "string"
+          },
+          "planned_amount": {
+            "title": "Planned Amount",
+            "type": "string"
+          },
+          "projected_amount": {
+            "default": "0.00",
+            "title": "Projected Amount",
+            "type": "string"
+          },
+          "remaining_amount": {
+            "default": "0.00",
+            "title": "Remaining Amount",
+            "type": "string"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "budget_id",
+          "category_key",
+          "name",
+          "planned_amount",
+          "sort_order",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BudgetCategoryOut",
+        "type": "object"
+      },
+      "BudgetCategoryUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "planned_amount": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned Amount"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          }
+        },
+        "title": "BudgetCategoryUpdate",
+        "type": "object"
+      },
+      "BudgetCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "total_limit": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "Total spending ceiling",
+            "title": "Total Limit"
+          }
+        },
+        "required": [
+          "total_limit"
+        ],
+        "title": "BudgetCreate",
+        "type": "object"
+      },
+      "BudgetGenerateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "BudgetGenerateRequest",
+        "type": "object"
+      },
+      "BudgetOut": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "total_limit": {
+            "title": "Total Limit",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "total_limit",
+          "currency",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BudgetOut",
+        "type": "object"
+      },
+      "BudgetProposalOut": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "base_revision": {
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "conversation_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conversation Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/BudgetProposalPayload"
+          },
+          "proposal_type": {
+            "title": "Proposal Type",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "conversation_id",
+          "proposal_type",
+          "status",
+          "base_revision",
+          "payload",
+          "created_at"
+        ],
+        "title": "BudgetProposalOut",
+        "type": "object"
+      },
+      "BudgetProposalPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "follow_up_questions": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Follow Up Questions",
+            "type": "array"
+          },
+          "proposed_allocations": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ProposedCategoryAllocation"
+            },
+            "title": "Proposed Allocations",
+            "type": "array"
+          },
+          "savings_recommendations": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Savings Recommendations",
+            "type": "array"
+          },
+          "schema_version": {
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "summary"
+        ],
+        "title": "BudgetProposalPayload",
+        "type": "object"
+      },
+      "BudgetSummaryOut": {
+        "additionalProperties": false,
+        "properties": {
+          "alerts": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Alerts",
+            "type": "array"
+          },
+          "cancelled_expenses": {
+            "title": "Cancelled Expenses",
+            "type": "string"
+          },
+          "category_summaries": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CategorySummaryItem"
+            },
+            "title": "Category Summaries",
+            "type": "array"
+          },
+          "committed_expenses": {
+            "title": "Committed Expenses",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "paid_expenses": {
+            "title": "Paid Expenses",
+            "type": "string"
+          },
+          "planned_expenses": {
+            "title": "Planned Expenses",
+            "type": "string"
+          },
+          "projected_headroom": {
+            "title": "Projected Headroom",
+            "type": "string"
+          },
+          "projected_total": {
+            "title": "Projected Total",
+            "type": "string"
+          },
+          "remaining_after_committed": {
+            "title": "Remaining After Committed",
+            "type": "string"
+          },
+          "total_allocated": {
+            "title": "Total Allocated",
+            "type": "string"
+          },
+          "total_limit": {
+            "title": "Total Limit",
+            "type": "string"
+          },
+          "unallocated_amount": {
+            "title": "Unallocated Amount",
+            "type": "string"
+          }
+        },
+        "required": [
+          "currency",
+          "total_limit",
+          "total_allocated",
+          "unallocated_amount",
+          "planned_expenses",
+          "committed_expenses",
+          "paid_expenses",
+          "cancelled_expenses",
+          "projected_total",
+          "remaining_after_committed",
+          "projected_headroom"
+        ],
+        "title": "BudgetSummaryOut",
+        "type": "object"
+      },
+      "BudgetUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "total_limit": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "Total spending ceiling",
+            "title": "Total Limit"
+          }
+        },
+        "required": [
+          "total_limit"
+        ],
+        "title": "BudgetUpdate",
+        "type": "object"
+      },
+      "CategorySummaryItem": {
+        "additionalProperties": false,
+        "properties": {
+          "category_id": {
+            "format": "uuid",
+            "title": "Category Id",
+            "type": "string"
+          },
+          "category_key": {
+            "title": "Category Key",
+            "type": "string"
+          },
+          "committed_amount": {
+            "title": "Committed Amount",
+            "type": "string"
+          },
+          "is_over_budget": {
+            "title": "Is Over Budget",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "paid_amount": {
+            "title": "Paid Amount",
+            "type": "string"
+          },
+          "planned_amount": {
+            "title": "Planned Amount",
+            "type": "string"
+          },
+          "projected_amount": {
+            "title": "Projected Amount",
+            "type": "string"
+          },
+          "remaining_amount": {
+            "title": "Remaining Amount",
+            "type": "string"
+          }
+        },
+        "required": [
+          "category_id",
+          "category_key",
+          "name",
+          "planned_amount",
+          "committed_amount",
+          "paid_amount",
+          "projected_amount",
+          "remaining_amount",
+          "is_over_budget"
+        ],
+        "title": "CategorySummaryItem",
+        "type": "object"
+      },
+      "ContextBudgetSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "committed_expenses": {
+            "title": "Committed Expenses",
+            "type": "string"
+          },
+          "paid_expenses": {
+            "title": "Paid Expenses",
+            "type": "string"
+          },
+          "planned_expenses": {
+            "title": "Planned Expenses",
+            "type": "string"
+          },
+          "projected_headroom": {
+            "title": "Projected Headroom",
+            "type": "string"
+          },
+          "projected_total": {
+            "title": "Projected Total",
+            "type": "string"
+          },
+          "remaining_after_committed": {
+            "title": "Remaining After Committed",
+            "type": "string"
+          },
+          "total_allocated": {
+            "title": "Total Allocated",
+            "type": "string"
+          },
+          "total_limit": {
+            "title": "Total Limit",
+            "type": "string"
+          },
+          "unallocated_amount": {
+            "title": "Unallocated Amount",
+            "type": "string"
+          }
+        },
+        "required": [
+          "total_limit",
+          "total_allocated",
+          "unallocated_amount",
+          "planned_expenses",
+          "committed_expenses",
+          "paid_expenses",
+          "projected_total",
+          "remaining_after_committed",
+          "projected_headroom"
+        ],
+        "title": "ContextBudgetSummary",
+        "type": "object"
+      },
       "ContextEventSummary": {
         "additionalProperties": false,
         "properties": {
@@ -183,6 +795,50 @@
           }
         },
         "title": "ContextPreferences",
+        "type": "object"
+      },
+      "ContextTimelineSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked_tasks": {
+            "title": "Blocked Tasks",
+            "type": "integer"
+          },
+          "completed_tasks": {
+            "title": "Completed Tasks",
+            "type": "integer"
+          },
+          "completion_percentage": {
+            "title": "Completion Percentage",
+            "type": "number"
+          },
+          "in_progress_tasks": {
+            "title": "In Progress Tasks",
+            "type": "integer"
+          },
+          "overdue_tasks": {
+            "title": "Overdue Tasks",
+            "type": "integer"
+          },
+          "pending_tasks": {
+            "title": "Pending Tasks",
+            "type": "integer"
+          },
+          "total_tasks": {
+            "title": "Total Tasks",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_tasks",
+          "completed_tasks",
+          "pending_tasks",
+          "in_progress_tasks",
+          "blocked_tasks",
+          "overdue_tasks",
+          "completion_percentage"
+        ],
+        "title": "ContextTimelineSummary",
         "type": "object"
       },
       "ConversationCreate": {
@@ -660,6 +1316,242 @@
           }
         },
         "title": "EventUpdate",
+        "type": "object"
+      },
+      "ExpenseCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Amount"
+          },
+          "budget_category_id": {
+            "format": "uuid",
+            "title": "Budget Category Id",
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Description",
+            "type": "string"
+          },
+          "expense_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expense Date"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ExpenseStatus",
+            "default": "planned"
+          },
+          "vendor_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor Id"
+          }
+        },
+        "required": [
+          "budget_category_id",
+          "description",
+          "amount"
+        ],
+        "title": "ExpenseCreate",
+        "type": "object"
+      },
+      "ExpenseOut": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "string"
+          },
+          "budget_category_id": {
+            "format": "uuid",
+            "title": "Budget Category Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by": {
+            "format": "uuid",
+            "title": "Created By",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "expense_date": {
+            "format": "date",
+            "title": "Expense Date",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ExpenseStatus"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "vendor_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor Id"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "budget_category_id",
+          "description",
+          "amount",
+          "currency",
+          "expense_date",
+          "status",
+          "created_by",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ExpenseOut",
+        "type": "object"
+      },
+      "ExpenseStatus": {
+        "enum": [
+          "planned",
+          "committed",
+          "paid",
+          "cancelled"
+        ],
+        "title": "ExpenseStatus",
+        "type": "string"
+      },
+      "ExpenseUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "budget_category_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Category Id"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 240,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "expense_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expense Date"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExpenseStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vendor_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor Id"
+          }
+        },
+        "title": "ExpenseUpdate",
         "type": "object"
       },
       "FunctionCreate": {
@@ -1704,6 +2596,44 @@
         "title": "ProfileUpdate",
         "type": "object"
       },
+      "ProposedCategoryAllocation": {
+        "additionalProperties": false,
+        "properties": {
+          "category_key": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Category Key",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          },
+          "percentage": {
+            "title": "Percentage",
+            "type": "string"
+          },
+          "suggested_amount": {
+            "title": "Suggested Amount",
+            "type": "string"
+          }
+        },
+        "required": [
+          "category_key",
+          "name",
+          "percentage",
+          "suggested_amount"
+        ],
+        "title": "ProposedCategoryAllocation",
+        "type": "object"
+      },
       "ProposedFunction": {
         "additionalProperties": false,
         "properties": {
@@ -1860,6 +2790,75 @@
         "title": "ProposedTask",
         "type": "object"
       },
+      "ProposedTaskItem": {
+        "additionalProperties": false,
+        "properties": {
+          "client_ref": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "depends_on": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Depends On",
+            "type": "array"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "due_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due At"
+          },
+          "function_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function Ref"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TaskPriority",
+            "default": "medium"
+          },
+          "title": {
+            "maxLength": 180,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_ref",
+          "title"
+        ],
+        "title": "ProposedTaskItem",
+        "type": "object"
+      },
       "ReadinessOut": {
         "properties": {
           "database": {
@@ -1889,6 +2888,16 @@
       "SharedEventContext": {
         "additionalProperties": false,
         "properties": {
+          "budget": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextBudgetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "event": {
             "$ref": "#/components/schemas/ContextEventSummary"
           },
@@ -1904,6 +2913,16 @@
           },
           "preferences": {
             "$ref": "#/components/schemas/ContextPreferences"
+          },
+          "timeline": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextTimelineSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -1913,6 +2932,598 @@
           "permissions"
         ],
         "title": "SharedEventContext",
+        "type": "object"
+      },
+      "TaskCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "assigned_user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned User Id"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "due_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due At"
+          },
+          "function_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function Id"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TaskPriority",
+            "default": "medium"
+          },
+          "sort_order": {
+            "default": 0,
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "title": {
+            "maxLength": 180,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "TaskCreate",
+        "type": "object"
+      },
+      "TaskDependencyCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "depends_on_task_id": {
+            "format": "uuid",
+            "title": "Depends On Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "depends_on_task_id"
+        ],
+        "title": "TaskDependencyCreate",
+        "type": "object"
+      },
+      "TaskDependencyOut": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "depends_on_task_id": {
+            "format": "uuid",
+            "title": "Depends On Task Id",
+            "type": "string"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "depends_on_task_id",
+          "created_at"
+        ],
+        "title": "TaskDependencyOut",
+        "type": "object"
+      },
+      "TaskOrigin": {
+        "enum": [
+          "manual",
+          "ai_accepted",
+          "adaptive_accepted"
+        ],
+        "title": "TaskOrigin",
+        "type": "string"
+      },
+      "TaskOut": {
+        "additionalProperties": false,
+        "properties": {
+          "assigned_user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned User Id"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "depends_on_task_ids": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Depends On Task Ids",
+            "type": "array"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "due_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due At"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "function_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function Id"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/TaskOrigin"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TaskPriority"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "title",
+          "status",
+          "priority",
+          "origin",
+          "sort_order",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "TaskOut",
+        "type": "object"
+      },
+      "TaskPriority": {
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "urgent"
+        ],
+        "title": "TaskPriority",
+        "type": "string"
+      },
+      "TaskStatus": {
+        "enum": [
+          "todo",
+          "in_progress",
+          "blocked",
+          "done",
+          "cancelled"
+        ],
+        "title": "TaskStatus",
+        "type": "string"
+      },
+      "TaskUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "assigned_user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned User Id"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "due_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due At"
+          },
+          "function_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function Id"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TaskPriority"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TaskStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 180,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "TaskUpdate",
+        "type": "object"
+      },
+      "TimelineAcceptRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "base_revision": {
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "selected_task_refs": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Selected Task Refs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "base_revision",
+          "selected_task_refs"
+        ],
+        "title": "TimelineAcceptRequest",
+        "type": "object"
+      },
+      "TimelineGenerateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "TimelineGenerateRequest",
+        "type": "object"
+      },
+      "TimelineProposalOut": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "base_revision": {
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "conversation_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conversation Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/TimelineProposalPayload"
+          },
+          "proposal_type": {
+            "title": "Proposal Type",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "conversation_id",
+          "proposal_type",
+          "status",
+          "base_revision",
+          "payload",
+          "created_at"
+        ],
+        "title": "TimelineProposalOut",
+        "type": "object"
+      },
+      "TimelineProposalPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "follow_up_questions": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Follow Up Questions",
+            "type": "array"
+          },
+          "proposed_tasks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ProposedTaskItem"
+            },
+            "title": "Proposed Tasks",
+            "type": "array"
+          },
+          "schema_version": {
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "summary"
+        ],
+        "title": "TimelineProposalPayload",
+        "type": "object"
+      },
+      "TimelineSummaryOut": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked_tasks": {
+            "title": "Blocked Tasks",
+            "type": "integer"
+          },
+          "cancelled_tasks": {
+            "title": "Cancelled Tasks",
+            "type": "integer"
+          },
+          "completed_tasks": {
+            "title": "Completed Tasks",
+            "type": "integer"
+          },
+          "completion_percentage": {
+            "title": "Completion Percentage",
+            "type": "number"
+          },
+          "high_priority_tasks": {
+            "title": "High Priority Tasks",
+            "type": "integer"
+          },
+          "in_progress_tasks": {
+            "title": "In Progress Tasks",
+            "type": "integer"
+          },
+          "overdue_tasks": {
+            "title": "Overdue Tasks",
+            "type": "integer"
+          },
+          "pending_tasks": {
+            "title": "Pending Tasks",
+            "type": "integer"
+          },
+          "total_tasks": {
+            "title": "Total Tasks",
+            "type": "integer"
+          },
+          "unscheduled_tasks": {
+            "title": "Unscheduled Tasks",
+            "type": "integer"
+          },
+          "upcoming_tasks": {
+            "title": "Upcoming Tasks",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_tasks",
+          "completed_tasks",
+          "pending_tasks",
+          "in_progress_tasks",
+          "blocked_tasks",
+          "cancelled_tasks",
+          "overdue_tasks",
+          "upcoming_tasks",
+          "unscheduled_tasks",
+          "high_priority_tasks",
+          "completion_percentage"
+        ],
+        "title": "TimelineSummaryOut",
         "type": "object"
       },
       "ValidationError": {
@@ -2867,6 +4478,565 @@
         ]
       }
     },
+    "/api/v1/events/{event_id}/budget": {
+      "get": {
+        "operationId": "get_budget_api_v1_events__event_id__budget_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get budget for an event",
+        "tags": [
+          "budget"
+        ]
+      },
+      "patch": {
+        "operationId": "update_budget_api_v1_events__event_id__budget_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update event budget total limit",
+        "tags": [
+          "budget"
+        ]
+      },
+      "post": {
+        "operationId": "create_budget_api_v1_events__event_id__budget_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Initialize or get budget for an event",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/budget/ai/generate": {
+      "post": {
+        "operationId": "generate_budget_proposal_api_v1_events__event_id__budget_ai_generate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetGenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Generate AI budget recommendations",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/budget/ai/proposals/{proposal_id}/accept": {
+      "post": {
+        "operationId": "accept_budget_proposal_api_v1_events__event_id__budget_ai_proposals__proposal_id__accept_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "proposal_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Proposal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetAcceptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Accept selected budget allocation recommendations",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/budget/categories": {
+      "get": {
+        "operationId": "list_categories_api_v1_events__event_id__budget_categories_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BudgetCategoryOut"
+                  },
+                  "title": "Response List Categories Api V1 Events  Event Id  Budget Categories Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List budget categories with spending breakdowns",
+        "tags": [
+          "budget"
+        ]
+      },
+      "post": {
+        "operationId": "create_category_api_v1_events__event_id__budget_categories_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetCategoryCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetCategoryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create a custom budget category",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/budget/categories/{category_id}": {
+      "delete": {
+        "operationId": "delete_category_api_v1_events__event_id__budget_categories__category_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "category_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Category Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete a budget category without expenses",
+        "tags": [
+          "budget"
+        ]
+      },
+      "patch": {
+        "operationId": "update_category_api_v1_events__event_id__budget_categories__category_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "category_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Category Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetCategoryUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetCategoryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update category planned allocation or name",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/budget/summary": {
+      "get": {
+        "operationId": "get_budget_summary_api_v1_events__event_id__budget_summary_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetSummaryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get authoritative financial summaries and alerts",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
     "/api/v1/events/{event_id}/context": {
       "get": {
         "description": "Return unified, permission-filtered context for the event workspace.",
@@ -2913,6 +5083,280 @@
         "summary": "Get Context",
         "tags": [
           "context"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/expenses": {
+      "get": {
+        "operationId": "list_expenses_api_v1_events__event_id__expenses_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExpenseOut"
+                  },
+                  "title": "Response List Expenses Api V1 Events  Event Id  Expenses Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List event expenses with optional filtering",
+        "tags": [
+          "budget"
+        ]
+      },
+      "post": {
+        "operationId": "create_expense_api_v1_events__event_id__expenses_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Record a new expense",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/expenses/{expense_id}": {
+      "delete": {
+        "operationId": "delete_expense_api_v1_events__event_id__expenses__expense_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "expense_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Expense Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Soft-delete an expense",
+        "tags": [
+          "budget"
+        ]
+      },
+      "patch": {
+        "operationId": "update_expense_api_v1_events__event_id__expenses__expense_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "expense_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Expense Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update expense amount, status, or details",
+        "tags": [
+          "budget"
         ]
       }
     },
@@ -3307,6 +5751,672 @@
         "summary": "Replace Preferences",
         "tags": [
           "preferences"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/tasks": {
+      "get": {
+        "operationId": "list_tasks_api_v1_events__event_id__tasks_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "priority",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Priority"
+            }
+          },
+          {
+            "in": "query",
+            "name": "function_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Function Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "assigned_user_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assigned User Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TaskOut"
+                  },
+                  "title": "Response List Tasks Api V1 Events  Event Id  Tasks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List event tasks with filtering",
+        "tags": [
+          "tasks"
+        ]
+      },
+      "post": {
+        "operationId": "create_task_api_v1_events__event_id__tasks_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create a new task",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/tasks/{task_id}": {
+      "delete": {
+        "operationId": "delete_task_api_v1_events__event_id__tasks__task_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel a task",
+        "tags": [
+          "tasks"
+        ]
+      },
+      "get": {
+        "operationId": "get_task_api_v1_events__event_id__tasks__task_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get task details",
+        "tags": [
+          "tasks"
+        ]
+      },
+      "patch": {
+        "operationId": "update_task_api_v1_events__event_id__tasks__task_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update task title, due date, status, or priority",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/tasks/{task_id}/dependencies": {
+      "post": {
+        "operationId": "add_dependency_api_v1_events__event_id__tasks__task_id__dependencies_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskDependencyCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDependencyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add a directed prerequisite dependency between tasks",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/tasks/{task_id}/dependencies/{depends_on_task_id}": {
+      "delete": {
+        "operationId": "remove_dependency_api_v1_events__event_id__tasks__task_id__dependencies__depends_on_task_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "depends_on_task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Depends On Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Remove a task dependency",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/timeline/ai/generate": {
+      "post": {
+        "operationId": "generate_timeline_proposal_api_v1_events__event_id__timeline_ai_generate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimelineGenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimelineProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Generate AI schedule and task preparation proposals",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/timeline/ai/proposals/{proposal_id}/accept": {
+      "post": {
+        "operationId": "accept_timeline_proposal_api_v1_events__event_id__timeline_ai_proposals__proposal_id__accept_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "proposal_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Proposal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimelineAcceptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimelineProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Accept selected timeline tasks and dependencies",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/timeline/summary": {
+      "get": {
+        "operationId": "get_timeline_summary_api_v1_events__event_id__timeline_summary_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimelineSummaryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get timeline progress summary and milestone metrics",
+        "tags": [
+          "tasks"
         ]
       }
     },

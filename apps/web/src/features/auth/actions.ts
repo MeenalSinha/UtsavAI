@@ -85,7 +85,14 @@ export async function signUpAction(_prev: ActionState, formData: FormData): Prom
   });
   if (error) {
     if (error.code === "weak_password") return { ok: false, fieldErrors: { password: "Choose a stronger password." } };
-    return { ok: false, message: "We could not create your account. Please try again." };
+    if (error.code === "over_email_send_rate_limit") {
+      return {
+        ok: false,
+        message:
+          "Supabase email rate limit exceeded. Please disable 'Confirm email' in your Supabase Dashboard (Authentication -> Providers -> Email) to enable instant signups without rate limits.",
+      };
+    }
+    return { ok: false, message: error.message || "We could not create your account. Please try again." };
   }
   if (data.session) redirect(routes.dashboard); // email confirmation disabled in this project
   // Same response whether or not the address already exists (no enumeration).

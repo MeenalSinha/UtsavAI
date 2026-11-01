@@ -49,11 +49,13 @@ def test_expected_tables_exist_with_rls_enabled(admin):
         "event_functions": True,
         "event_members": True,
         "event_preferences": True,
+        "event_vendors": True,
         "events": True,
         "expenses": True,
         "profiles": True,
         "task_dependencies": True,
         "tasks": True,
+        "vendor_quotes": True,
     }
 
 

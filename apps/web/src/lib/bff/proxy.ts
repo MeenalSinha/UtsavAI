@@ -35,8 +35,41 @@ const ROUTES: { pattern: RegExp; methods: ReadonlySet<string> }[] = [
   { pattern: new RegExp(`^events/${UUID}/ai/proposals/${UUID}$`), methods: new Set(["GET"]) },
   { pattern: new RegExp(`^events/${UUID}/ai/proposals/${UUID}/accept$`), methods: new Set(["POST"]) },
   { pattern: new RegExp(`^events/${UUID}/ai/proposals/${UUID}/reject$`), methods: new Set(["POST"]) },
+  // Phase 3: BudgetAI & TimelineAI
+  { pattern: new RegExp(`^events/${UUID}/budget$`), methods: new Set(["GET", "POST", "PATCH"]) },
+  { pattern: new RegExp(`^events/${UUID}/budget/categories$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/budget/categories/${UUID}$`), methods: new Set(["PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/budget/summary$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/budget/ai/generate$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/budget/ai/proposals/${UUID}/accept$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/expenses$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/expenses/${UUID}$`), methods: new Set(["PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/tasks$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/tasks/${UUID}$`), methods: new Set(["GET", "PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/tasks/${UUID}/dependencies$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/tasks/${UUID}/dependencies/${UUID}$`), methods: new Set(["DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/tasks/summary$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/timeline/summary$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/timeline/ai/generate$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/timeline/ai/proposals/${UUID}/accept$`), methods: new Set(["POST"]) },
+  // Phase 4: VendorConnect
+  { pattern: new RegExp(`^events/${UUID}/vendors$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/vendors/summary$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/vendors/${UUID}$`), methods: new Set(["GET", "PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/vendors/${UUID}/quotes$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/vendors/${UUID}/quotes/${UUID}$`), methods: new Set(["PATCH"]) },
+  { pattern: new RegExp(`^events/${UUID}/vendor-quote-comparison$`), methods: new Set(["GET"]) },
 ];
-const FORWARDED_QUERY_KEYS = new Set(["limit", "cursor", "status", "include_archived", "sort"]);
+const FORWARDED_QUERY_KEYS = new Set([
+  "limit",
+  "cursor",
+  "status",
+  "include_archived",
+  "sort",
+  "category",
+  "search",
+  "priority",
+]);
 const MUTATING = new Set(["POST", "PATCH", "PUT", "DELETE"]);
 const MAX_BODY_BYTES = 64 * 1024;
 

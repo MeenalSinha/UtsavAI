@@ -841,6 +841,72 @@
         "title": "ContextTimelineSummary",
         "type": "object"
       },
+      "ContextVendorCategorySummary": {
+        "additionalProperties": false,
+        "properties": {
+          "booked_count": {
+            "title": "Booked Count",
+            "type": "integer"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "quoted_count": {
+            "title": "Quoted Count",
+            "type": "integer"
+          },
+          "shortlisted_count": {
+            "title": "Shortlisted Count",
+            "type": "integer"
+          },
+          "vendor_count": {
+            "title": "Vendor Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "category",
+          "vendor_count",
+          "quoted_count",
+          "shortlisted_count",
+          "booked_count"
+        ],
+        "title": "ContextVendorCategorySummary",
+        "type": "object"
+      },
+      "ContextVendorSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/ContextVendorCategorySummary"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "pending_decisions": {
+            "title": "Pending Decisions",
+            "type": "integer"
+          },
+          "quote_count": {
+            "title": "Quote Count",
+            "type": "integer"
+          },
+          "total_vendors": {
+            "title": "Total Vendors",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_vendors",
+          "categories",
+          "quote_count",
+          "pending_decisions"
+        ],
+        "title": "ContextVendorSummary",
+        "type": "object"
+      },
       "ConversationCreate": {
         "additionalProperties": false,
         "properties": {
@@ -2859,6 +2925,177 @@
         "title": "ProposedTaskItem",
         "type": "object"
       },
+      "QuotationComparisonGroup": {
+        "properties": {
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "category_warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Category Warnings",
+            "type": "array"
+          },
+          "price_range_max": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Range Max"
+          },
+          "price_range_min": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Range Min"
+          },
+          "quotes": {
+            "items": {
+              "$ref": "#/components/schemas/QuotationComparisonItem"
+            },
+            "title": "Quotes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "title": "QuotationComparisonGroup",
+        "type": "object"
+      },
+      "QuotationComparisonItem": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "string"
+          },
+          "comparison_warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Comparison Warnings",
+            "type": "array"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "missing_fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing Fields",
+            "type": "array"
+          },
+          "quote_id": {
+            "format": "uuid",
+            "title": "Quote Id",
+            "type": "string"
+          },
+          "scope_summary": {
+            "title": "Scope Summary",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/QuoteStatus"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "vendor_name": {
+            "title": "Vendor Name",
+            "type": "string"
+          },
+          "vendor_status": {
+            "$ref": "#/components/schemas/VendorStatus"
+          }
+        },
+        "required": [
+          "vendor_id",
+          "vendor_name",
+          "vendor_status",
+          "quote_id",
+          "amount",
+          "currency",
+          "scope_summary",
+          "status",
+          "updated_at"
+        ],
+        "title": "QuotationComparisonItem",
+        "type": "object"
+      },
+      "QuotationComparisonOut": {
+        "properties": {
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/QuotationComparisonGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "total_quotes_compared": {
+            "default": 0,
+            "title": "Total Quotes Compared",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "event_id",
+          "currency"
+        ],
+        "title": "QuotationComparisonOut",
+        "type": "object"
+      },
+      "QuoteStatus": {
+        "enum": [
+          "received",
+          "shortlisted",
+          "accepted",
+          "rejected",
+          "expired"
+        ],
+        "title": "QuoteStatus",
+        "type": "string"
+      },
       "ReadinessOut": {
         "properties": {
           "database": {
@@ -2918,6 +3155,16 @@
             "anyOf": [
               {
                 "$ref": "#/components/schemas/ContextTimelineSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vendor_summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextVendorSummary"
               },
               {
                 "type": "null"
@@ -3564,6 +3811,805 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "VendorCategorySummary": {
+        "properties": {
+          "booked_count": {
+            "default": 0,
+            "title": "Booked Count",
+            "type": "integer"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "quoted_count": {
+            "default": 0,
+            "title": "Quoted Count",
+            "type": "integer"
+          },
+          "shortlisted_count": {
+            "default": 0,
+            "title": "Shortlisted Count",
+            "type": "integer"
+          },
+          "vendor_count": {
+            "default": 0,
+            "title": "Vendor Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "title": "VendorCategorySummary",
+        "type": "object"
+      },
+      "VendorCreate": {
+        "properties": {
+          "category": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Category",
+            "type": "string"
+          },
+          "contact_name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Name"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "website_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website Url"
+          }
+        },
+        "required": [
+          "category",
+          "name"
+        ],
+        "title": "VendorCreate",
+        "type": "object"
+      },
+      "VendorDetailOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "associated_expenses": {
+            "items": {
+              "$ref": "#/components/schemas/ExpenseOut"
+            },
+            "title": "Associated Expenses",
+            "type": "array"
+          },
+          "associated_expenses_count": {
+            "default": 0,
+            "title": "Associated Expenses Count",
+            "type": "integer"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "contact_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Name"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "latest_quote_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Quote Amount"
+          },
+          "latest_quote_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Quote Currency"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "quotes": {
+            "items": {
+              "$ref": "#/components/schemas/VendorQuoteOut"
+            },
+            "title": "Quotes",
+            "type": "array"
+          },
+          "quotes_count": {
+            "default": 0,
+            "title": "Quotes Count",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VendorStatus"
+          },
+          "total_spent_amount": {
+            "default": "0.00",
+            "title": "Total Spent Amount",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "website_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website Url"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "category",
+          "name",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "VendorDetailOut",
+        "type": "object"
+      },
+      "VendorOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "associated_expenses_count": {
+            "default": 0,
+            "title": "Associated Expenses Count",
+            "type": "integer"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "contact_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Name"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "latest_quote_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Quote Amount"
+          },
+          "latest_quote_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Quote Currency"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "quotes_count": {
+            "default": 0,
+            "title": "Quotes Count",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VendorStatus"
+          },
+          "total_spent_amount": {
+            "default": "0.00",
+            "title": "Total Spent Amount",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "website_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website Url"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "category",
+          "name",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "VendorOut",
+        "type": "object"
+      },
+      "VendorQuoteCreate": {
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "default": "INR",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Currency",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "scope_summary": {
+            "minLength": 1,
+            "title": "Scope Summary",
+            "type": "string"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          }
+        },
+        "required": [
+          "amount",
+          "scope_summary"
+        ],
+        "title": "VendorQuoteCreate",
+        "type": "object"
+      },
+      "VendorQuoteOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "scope_summary": {
+            "title": "Scope Summary",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/QuoteStatus"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "vendor_id",
+          "amount",
+          "currency",
+          "scope_summary",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "VendorQuoteOut",
+        "type": "object"
+      },
+      "VendorQuoteUpdate": {
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "scope_summary": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Summary"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QuoteStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          }
+        },
+        "title": "VendorQuoteUpdate",
+        "type": "object"
+      },
+      "VendorStatus": {
+        "enum": [
+          "identified",
+          "contacted",
+          "quoted",
+          "shortlisted",
+          "booked",
+          "declined"
+        ],
+        "title": "VendorStatus",
+        "type": "string"
+      },
+      "VendorSummaryOut": {
+        "properties": {
+          "booked_count": {
+            "default": 0,
+            "title": "Booked Count",
+            "type": "integer"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/VendorCategorySummary"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "contacted_count": {
+            "default": 0,
+            "title": "Contacted Count",
+            "type": "integer"
+          },
+          "declined_count": {
+            "default": 0,
+            "title": "Declined Count",
+            "type": "integer"
+          },
+          "identified_count": {
+            "default": 0,
+            "title": "Identified Count",
+            "type": "integer"
+          },
+          "pending_decisions": {
+            "default": 0,
+            "title": "Pending Decisions",
+            "type": "integer"
+          },
+          "quote_count": {
+            "default": 0,
+            "title": "Quote Count",
+            "type": "integer"
+          },
+          "quoted_count": {
+            "default": 0,
+            "title": "Quoted Count",
+            "type": "integer"
+          },
+          "shortlisted_count": {
+            "default": 0,
+            "title": "Shortlisted Count",
+            "type": "integer"
+          },
+          "total_vendors": {
+            "default": 0,
+            "title": "Total Vendors",
+            "type": "integer"
+          }
+        },
+        "title": "VendorSummaryOut",
+        "type": "object"
+      },
+      "VendorUpdate": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "contact_name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Name"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VendorStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "website_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website Url"
+          }
+        },
+        "title": "VendorUpdate",
         "type": "object"
       }
     },
@@ -6417,6 +7463,670 @@
         "summary": "Get timeline progress summary and milestone metrics",
         "tags": [
           "tasks"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/vendor-quote-comparison": {
+      "get": {
+        "operationId": "get_quotation_comparison_api_v1_events__event_id__vendor_quote_comparison_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuotationComparisonOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Deterministic quotation comparison grouped by category",
+        "tags": [
+          "vendors"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/vendors": {
+      "get": {
+        "operationId": "list_vendors_api_v1_events__event_id__vendors_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorOut"
+                  },
+                  "title": "Response List Vendors Api V1 Events  Event Id  Vendors Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List event vendors with optional filtering",
+        "tags": [
+          "vendors"
+        ]
+      },
+      "post": {
+        "operationId": "create_vendor_api_v1_events__event_id__vendors_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create a new vendor record",
+        "tags": [
+          "vendors"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/vendors/summary": {
+      "get": {
+        "operationId": "get_vendor_summary_api_v1_events__event_id__vendors_summary_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorSummaryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get vendor status summary and category metrics",
+        "tags": [
+          "vendors"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/vendors/{vendor_id}": {
+      "delete": {
+        "operationId": "archive_vendor_api_v1_events__event_id__vendors__vendor_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vendor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Soft-archive a vendor record",
+        "tags": [
+          "vendors"
+        ]
+      },
+      "get": {
+        "operationId": "get_vendor_api_v1_events__event_id__vendors__vendor_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vendor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorDetailOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get vendor details including recorded quotations and linked expenses",
+        "tags": [
+          "vendors"
+        ]
+      },
+      "patch": {
+        "operationId": "update_vendor_api_v1_events__event_id__vendors__vendor_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vendor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update vendor details or lifecycle status",
+        "tags": [
+          "vendors"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/vendors/{vendor_id}/quotes": {
+      "get": {
+        "operationId": "list_quotes_api_v1_events__event_id__vendors__vendor_id__quotes_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vendor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorQuoteOut"
+                  },
+                  "title": "Response List Quotes Api V1 Events  Event Id  Vendors  Vendor Id  Quotes Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List recorded quotations for a vendor",
+        "tags": [
+          "vendors"
+        ]
+      },
+      "post": {
+        "operationId": "create_quote_api_v1_events__event_id__vendors__vendor_id__quotes_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vendor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorQuoteCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorQuoteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Record a new quotation from a vendor",
+        "tags": [
+          "vendors"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/vendors/{vendor_id}/quotes/{quote_id}": {
+      "patch": {
+        "operationId": "update_quote_api_v1_events__event_id__vendors__vendor_id__quotes__quote_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vendor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vendor Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "quote_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Quote Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorQuoteUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorQuoteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update quotation details or acceptance/shortlist status",
+        "tags": [
+          "vendors"
         ]
       }
     },

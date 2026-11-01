@@ -29,6 +29,7 @@ from app.modules.budget.schemas import (
 )
 from app.modules.events import repository as events_repo
 from app.modules.events.permissions import require_permission
+from app.modules.vendors import repository as vendors_repo
 
 
 def _require_active_event(event: dict[str, Any]) -> None:
@@ -359,6 +360,11 @@ def create_expense(db: Database, principal: Principal, event_id: uuid.UUID, req:
         if budget is None or cat["budget_id"] != budget["id"]:
             raise InvalidRequestError("Category does not belong to this event's budget.")
 
+        if req.vendor_id is not None:
+            vendor = vendors_repo.get_vendor(conn, event_id, req.vendor_id)
+            if vendor is None:
+                raise InvalidRequestError("Vendor does not belong to this event.")
+
         expense_date = req.expense_date or date.today()
         row = repo.create_expense(
             conn,
@@ -425,6 +431,11 @@ def update_expense(
             budget = repo.get_budget(conn, event_id)
             if budget is None or cat["budget_id"] != budget["id"]:
                 raise InvalidRequestError("Category does not belong to this event's budget.")
+
+        if req.vendor_id is not None:
+            vendor = vendors_repo.get_vendor(conn, event_id, req.vendor_id)
+            if vendor is None:
+                raise InvalidRequestError("Vendor does not belong to this event.")
 
         status_val = req.status.value if req.status is not None else None
         updated = repo.update_expense(

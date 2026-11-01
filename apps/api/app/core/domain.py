@@ -97,6 +97,8 @@ class Permission(StrEnum):
     TASK_MANAGE = "task.manage"
     BUDGET_PROPOSE = "budget.propose"
     TIMELINE_PROPOSE = "timeline.propose"
+    VENDOR_READ = "vendor.read"
+    VENDOR_MANAGE = "vendor.manage"
 
 
 ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
@@ -117,6 +119,8 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.TASK_MANAGE,
             Permission.BUDGET_PROPOSE,
             Permission.TIMELINE_PROPOSE,
+            Permission.VENDOR_READ,
+            Permission.VENDOR_MANAGE,
         }
     ),
     MemberRole.VIEWER: frozenset(
@@ -125,9 +129,27 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.BUDGET_READ,
             Permission.EXPENSE_READ,
             Permission.TASK_READ,
+            Permission.VENDOR_READ,
         }
     ),
 }
+
+
+class VendorStatus(StrEnum):
+    IDENTIFIED = "identified"
+    CONTACTED = "contacted"
+    QUOTED = "quoted"
+    SHORTLISTED = "shortlisted"
+    BOOKED = "booked"
+    DECLINED = "declined"
+
+
+class QuoteStatus(StrEnum):
+    RECEIVED = "received"
+    SHORTLISTED = "shortlisted"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    EXPIRED = "expired"
 
 
 class ProposalStatus(StrEnum):

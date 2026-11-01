@@ -1,0 +1,1 @@
+"""VendorConnect module."""

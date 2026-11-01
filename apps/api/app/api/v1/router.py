@@ -11,6 +11,7 @@ from app.api.v1 import (
     meta,
     preferences,
     tasks,
+    vendors,
 )
 
 api_router = APIRouter()
@@ -24,3 +25,4 @@ api_router.include_router(functions.router)
 api_router.include_router(ai.router)
 api_router.include_router(budget.router)
 api_router.include_router(tasks.router)
+api_router.include_router(vendors.router)

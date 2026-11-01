@@ -21,6 +21,7 @@ from app.modules.functions import repository as functions_repo
 from app.modules.functions.schemas import FunctionOut
 from app.modules.preferences import repository as preferences_repo
 from app.modules.tasks import repository as tasks_repo
+from app.modules.vendors import repository as vendors_repo
 
 
 class ContextLocation(BaseModel):
@@ -93,6 +94,25 @@ class ContextTimelineSummary(BaseModel):
     completion_percentage: float
 
 
+class ContextVendorCategorySummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    category: str
+    vendor_count: int
+    quoted_count: int
+    shortlisted_count: int
+    booked_count: int
+
+
+class ContextVendorSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total_vendors: int
+    categories: list[ContextVendorCategorySummary]
+    quote_count: int
+    pending_decisions: int
+
+
 class SharedEventContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -102,6 +122,7 @@ class SharedEventContext(BaseModel):
     permissions: ContextPermissions
     budget: ContextBudgetSummary | None = None
     timeline: ContextTimelineSummary | None = None
+    vendor_summary: ContextVendorSummary | None = None
 
 
 def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID) -> SharedEventContext:
@@ -224,6 +245,26 @@ def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID)
                 completion_percentage=pct,
             )
 
+        # Build Vendor context summary
+        vendor_metrics = vendors_repo.get_vendor_metrics(conn, event_id)
+        context_vendor: ContextVendorSummary | None = None
+        if vendor_metrics["total_vendors"] > 0:
+            context_vendor = ContextVendorSummary(
+                total_vendors=vendor_metrics["total_vendors"],
+                quote_count=vendor_metrics["quote_count"],
+                pending_decisions=vendor_metrics["pending_decisions"],
+                categories=[
+                    ContextVendorCategorySummary(
+                        category=c["category"],
+                        vendor_count=c["vendor_count"],
+                        quoted_count=c["quoted_count"],
+                        shortlisted_count=c["shortlisted_count"],
+                        booked_count=c["booked_count"],
+                    )
+                    for c in vendor_metrics["categories"]
+                ],
+            )
+
         return SharedEventContext(
             event=event_summary,
             preferences=preferences,
@@ -231,4 +272,5 @@ def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID)
             permissions=permissions,
             budget=context_budget,
             timeline=context_timeline,
+            vendor_summary=context_vendor,
         )

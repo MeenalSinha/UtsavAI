@@ -1,0 +1,190 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PG_ADMIN_URL: postgresql://postgres:ci_only_password@localhost:5432/postgres
+
+jobs:
+  backend:
+    name: Backend (ruff, mypy, pytest with real PostgreSQL + RLS)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci_only_password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      CI: "true"
+      TEST_DATABASE_ADMIN_URL: postgresql://postgres:ci_only_password@localhost:5432/utsavai_test
+      TEST_DATABASE_URL: postgresql://utsavai_app:ci_runtime_password@localhost:5432/utsavai_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.7"
+          enable-cache: true
+          cache-dependency-glob: apps/api/uv.lock
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies (locked)
+        working-directory: apps/api
+        run: uv sync --frozen
+      - name: Create database and apply migrations
+        run: |
+          sudo apt-get install -y --no-install-recommends postgresql-client >/dev/null
+          ADMIN_URL="$PG_ADMIN_URL" APP_ROLE_PASSWORD=ci_runtime_password scripts/setup_local_db.sh utsavai_test
+      - name: Ruff lint
+        working-directory: apps/api
+        run: uv run ruff check .
+      - name: Ruff format check
+        working-directory: apps/api
+        run: uv run ruff format --check .
+      - name: Type check (mypy strict)
+        working-directory: apps/api
+        run: uv run mypy
+      - name: Tests (unit, database, RLS, pool isolation, API)
+        working-directory: apps/api
+        run: uv run pytest -q
+      - name: Dependency audit
+        working-directory: apps/api
+        run: |
+          uv export --frozen --no-dev --no-hashes -o /tmp/requirements.txt >/dev/null
+          uv run pip-audit -r /tmp/requirements.txt --no-deps --disable-pip
+
+  database:
+    name: Database (migration reproducibility and policy guardrails)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci_only_password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install psql
+        run: sudo apt-get install -y --no-install-recommends postgresql-client >/dev/null
+      - name: Migrations apply from scratch, twice, to identical schemas
+        run: |
+          ADMIN_URL="$PG_ADMIN_URL" scripts/setup_local_db.sh db_one
+          ADMIN_URL="$PG_ADMIN_URL" scripts/setup_local_db.sh db_two
+          dump() { pg_dump --schema-only --no-owner --no-privileges "postgresql://postgres:ci_only_password@localhost:5432/$1" | grep -v -E '^(--|SET |SELECT pg_catalog|.restrict|.unrestrict)' ; }
+          diff <(dump db_one) <(dump db_two) && echo "schemas identical"
+      - name: Guardrails (no BYPASSRLS grants, no SECURITY DEFINER, RLS on every table)
+        run: |
+          ! grep -n -i -E "bypassrls" supabase/migrations/*.sql | grep -v -i -E "nobypassrls" || { echo "BYPASSRLS found"; exit 1; }
+          ! grep -n -i "security definer" supabase/migrations/*.sql || { echo "SECURITY DEFINER found"; exit 1; }
+          psql "postgresql://postgres:ci_only_password@localhost:5432/db_one" -v ON_ERROR_STOP=1 -tA -c \
+            "select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and relkind='r' and not relrowsecurity" | tee /tmp/norls
+          test ! -s /tmp/norls
+
+  frontend:
+    name: Frontend (eslint, tsc, vitest, contract, build)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key-for-build-0000
+      NEXT_PUBLIC_APP_ENV: test
+      API_BASE_URL: http://localhost:8000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - name: API contract is current
+        run: |
+          npm run contract
+      - run: npm run build
+      - name: Dependency audit (production, high severity)
+        run: npm audit --omit=dev --audit-level=high
+
+  openapi:
+    name: OpenAPI schema is valid and committed copy is current
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.7"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - working-directory: apps/api
+        run: uv sync --frozen
+      - name: Regenerate and compare
+        working-directory: apps/api
+        run: |
+          uv run python ../../scripts/export_openapi.py
+          git diff --exit-code ../web/openapi.json
+
+  secrets:
+    name: Secret and hardcode scan
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: scripts/scan_secrets.sh
+
+  e2e:
+    name: Browser E2E (real Supabase test project)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    needs: [backend, frontend]
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_APP_ENV: test
+      API_BASE_URL: http://localhost:8000
+      DATABASE_URL: ${{ secrets.E2E_DATABASE_URL }}
+      SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
+      APP_ENV: test
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.7"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: uv sync --frozen
+        working-directory: apps/api
+      - run: npm ci && npx playwright install --with-deps chromium && npm run build
+        working-directory: apps/web
+      - name: Start services and run E2E
+        run: |
+          (cd apps/api && uv run uvicorn app.main:app_factory --factory --port 8000 &)
+          (cd apps/web && npm start &)
+          npx --yes wait-on http://localhost:8000/api/v1/health/ready http://localhost:3000 --timeout 60000
+          cd apps/web && npm run e2e

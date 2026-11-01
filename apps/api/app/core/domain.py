@@ -1,0 +1,106 @@
+"""Central application rules: categories, statuses, roles, permissions, defaults.
+
+Every other module imports from here. The same values are published to the
+frontend through GET /api/v1/meta so the two sides cannot drift apart.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from enum import StrEnum
+
+
+@dataclass(frozen=True, slots=True)
+class EventTypeConfig:
+    key: str
+    label: str
+    enabled: bool
+
+
+# Event categories are configuration, never a database enum (docs/DATABASE_SCHEMA.md 13).
+EVENT_TYPES: tuple[EventTypeConfig, ...] = (
+    EventTypeConfig("wedding", "Wedding", True),
+    EventTypeConfig("birthday", "Birthday", False),
+    EventTypeConfig("anniversary", "Anniversary", False),
+    EventTypeConfig("community", "Community event", False),
+)
+ENABLED_EVENT_TYPES: frozenset[str] = frozenset(t.key for t in EVENT_TYPES if t.enabled)
+
+DEFAULT_EVENT_TYPE = "wedding"
+SUPPORTED_CURRENCIES: tuple[str, ...] = ("INR", "USD", "EUR", "GBP", "AED", "SGD", "AUD", "CAD")
+DEFAULT_CURRENCY = "INR"
+DEFAULT_COUNTRY_CODE = "IN"
+DEFAULT_TIMEZONE = "Asia/Kolkata"
+SUPPORTED_LOCALES: tuple[str, ...] = ("en-IN", "en-US", "en-GB", "hi-IN")
+DEFAULT_LOCALE = "en-IN"
+
+# Suggestions for the UI country picker. The API accepts any ISO 3166-1 alpha-2 code.
+SUGGESTED_COUNTRY_CODES: tuple[str, ...] = (
+    "IN", "US", "GB", "AE", "SG", "AU", "CA", "DE", "FR", "NZ", "MY", "ZA", "NP", "LK", "BD",
+)  # fmt: skip
+
+MAX_TITLE_LENGTH = 160
+MAX_LOCATION_NAME_LENGTH = 160
+MAX_LOCATION_PART_LENGTH = 120
+MAX_DISPLAY_NAME_LENGTH = 80
+MAX_GUEST_COUNT = 100_000
+
+
+class EventStatus(StrEnum):
+    DRAFT = "draft"
+    PLANNING = "planning"
+    COMPLETED = "completed"
+    ARCHIVED = "archived"
+
+
+DEFAULT_EVENT_STATUS = EventStatus.DRAFT
+
+# Documented lifecycle. "archived" is reached only through DELETE /events/{id}
+# and is terminal in Phase 1 (restore is out of scope).
+STATUS_TRANSITIONS: dict[EventStatus, frozenset[EventStatus]] = {
+    EventStatus.DRAFT: frozenset({EventStatus.PLANNING}),
+    EventStatus.PLANNING: frozenset({EventStatus.DRAFT, EventStatus.COMPLETED}),
+    EventStatus.COMPLETED: frozenset({EventStatus.PLANNING}),
+    EventStatus.ARCHIVED: frozenset(),
+}
+PATCHABLE_STATUSES: frozenset[EventStatus] = frozenset(
+    {EventStatus.DRAFT, EventStatus.PLANNING, EventStatus.COMPLETED}
+)
+
+
+class MemberRole(StrEnum):
+    OWNER = "owner"
+    EDITOR = "editor"
+    VIEWER = "viewer"
+
+
+class MemberStatus(StrEnum):
+    INVITED = "invited"
+    ACTIVE = "active"
+    REVOKED = "revoked"
+
+
+class Permission(StrEnum):
+    EVENT_READ = "event.read"
+    EVENT_UPDATE = "event.update"
+    EVENT_ARCHIVE = "event.archive"
+    MEMBER_MANAGE = "member.manage"
+
+
+ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
+    MemberRole.OWNER: frozenset(Permission),
+    MemberRole.EDITOR: frozenset({Permission.EVENT_READ, Permission.EVENT_UPDATE}),
+    MemberRole.VIEWER: frozenset({Permission.EVENT_READ}),
+}
+
+DEFAULT_PAGE_SIZE = 25
+MAX_PAGE_SIZE = 100
+
+
+class EventSort(StrEnum):
+    START_ASC = "start_at"
+    CREATED_DESC = "created_at"
+
+
+def role_allows(role: MemberRole, permission: Permission) -> bool:
+    return permission in ROLE_PERMISSIONS[role]

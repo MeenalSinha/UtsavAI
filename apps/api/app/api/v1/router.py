@@ -6,10 +6,12 @@ from app.api.v1 import (
     context,
     events,
     functions,
+    gifts,
     health,
     me,
     meta,
     preferences,
+    public_gifts,
     tasks,
     vendors,
 )
@@ -26,3 +28,5 @@ api_router.include_router(ai.router)
 api_router.include_router(budget.router)
 api_router.include_router(tasks.router)
 api_router.include_router(vendors.router)
+api_router.include_router(gifts.router)
+api_router.include_router(public_gifts.router)

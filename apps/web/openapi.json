@@ -679,6 +679,58 @@
         "title": "ContextEventSummary",
         "type": "object"
       },
+      "ContextGiftSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "active_group_pledges": {
+            "default": "0.00",
+            "title": "Active Group Pledges",
+            "type": "string"
+          },
+          "available_items": {
+            "default": 0,
+            "title": "Available Items",
+            "type": "integer"
+          },
+          "currency": {
+            "default": "INR",
+            "title": "Currency",
+            "type": "string"
+          },
+          "group_gift_items": {
+            "default": 0,
+            "title": "Group Gift Items",
+            "type": "integer"
+          },
+          "host_confirmed_amount": {
+            "default": "0.00",
+            "title": "Host Confirmed Amount",
+            "type": "string"
+          },
+          "is_public": {
+            "default": false,
+            "title": "Is Public",
+            "type": "boolean"
+          },
+          "registry_exists": {
+            "default": false,
+            "title": "Registry Exists",
+            "type": "boolean"
+          },
+          "reserved_items": {
+            "default": 0,
+            "title": "Reserved Items",
+            "type": "integer"
+          },
+          "total_items": {
+            "default": 0,
+            "title": "Total Items",
+            "type": "integer"
+          }
+        },
+        "title": "ContextGiftSummary",
+        "type": "object"
+      },
       "ContextLocation": {
         "additionalProperties": false,
         "properties": {
@@ -1865,6 +1917,734 @@
         "title": "FunctionUpdate",
         "type": "object"
       },
+      "GiftContributionOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "string"
+          },
+          "confirmation_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmation Note"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "gift_item_id": {
+            "format": "uuid",
+            "title": "Gift Item Id",
+            "type": "string"
+          },
+          "gift_item_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gift Item Title"
+          },
+          "guest_alias": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Alias"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/GiftContributionStatus"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "verification_method": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VerificationMethod"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "verified_by": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified By"
+          }
+        },
+        "required": [
+          "id",
+          "gift_item_id",
+          "amount",
+          "currency",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "GiftContributionOut",
+        "type": "object"
+      },
+      "GiftContributionStatus": {
+        "enum": [
+          "pledged",
+          "verified",
+          "withdrawn",
+          "refunded"
+        ],
+        "title": "GiftContributionStatus",
+        "type": "string"
+      },
+      "GiftItemCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "default": "INR",
+            "title": "Currency",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "display_order": {
+            "default": 0,
+            "title": "Display Order",
+            "type": "integer"
+          },
+          "gift_mode": {
+            "$ref": "#/components/schemas/GiftMode",
+            "default": "individual"
+          },
+          "item_type": {
+            "$ref": "#/components/schemas/GiftItemType",
+            "default": "product"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/GiftItemPriority",
+            "default": "important"
+          },
+          "product_url": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Url"
+          },
+          "target_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Amount"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "GiftItemCreate",
+        "type": "object"
+      },
+      "GiftItemOut": {
+        "properties": {
+          "active_reservation_alias": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Reservation Alias"
+          },
+          "active_reservation_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GiftReservationStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed_amount": {
+            "default": "0.00",
+            "title": "Confirmed Amount",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "display_order": {
+            "title": "Display Order",
+            "type": "integer"
+          },
+          "gift_mode": {
+            "$ref": "#/components/schemas/GiftMode"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "item_type": {
+            "$ref": "#/components/schemas/GiftItemType"
+          },
+          "pledged_amount": {
+            "default": "0.00",
+            "title": "Pledged Amount",
+            "type": "string"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/GiftItemPriority"
+          },
+          "product_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Url"
+          },
+          "registry_id": {
+            "format": "uuid",
+            "title": "Registry Id",
+            "type": "string"
+          },
+          "remaining_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Amount"
+          },
+          "target_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Amount"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "registry_id",
+          "title",
+          "item_type",
+          "gift_mode",
+          "currency",
+          "priority",
+          "display_order",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "GiftItemOut",
+        "type": "object"
+      },
+      "GiftItemPriority": {
+        "enum": [
+          "nice_to_have",
+          "important",
+          "high_priority"
+        ],
+        "title": "GiftItemPriority",
+        "type": "string"
+      },
+      "GiftItemType": {
+        "enum": [
+          "product",
+          "cash_fund",
+          "experience",
+          "other"
+        ],
+        "title": "GiftItemType",
+        "type": "string"
+      },
+      "GiftItemUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "display_order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Order"
+          },
+          "gift_mode": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GiftMode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "item_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GiftItemType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GiftItemPriority"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "product_url": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Url"
+          },
+          "target_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Amount"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "GiftItemUpdate",
+        "type": "object"
+      },
+      "GiftMode": {
+        "enum": [
+          "individual",
+          "group"
+        ],
+        "title": "GiftMode",
+        "type": "string"
+      },
+      "GiftRegistryOut": {
+        "properties": {
+          "allow_group_gifting": {
+            "title": "Allow Group Gifting",
+            "type": "boolean"
+          },
+          "available_items": {
+            "default": 0,
+            "title": "Available Items",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "currency": {
+            "default": "INR",
+            "title": "Currency",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "group_gift_items": {
+            "default": 0,
+            "title": "Group Gift Items",
+            "type": "integer"
+          },
+          "has_share_token": {
+            "title": "Has Share Token",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_public": {
+            "title": "Is Public",
+            "type": "boolean"
+          },
+          "reserved_items": {
+            "default": 0,
+            "title": "Reserved Items",
+            "type": "integer"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "total_confirmed_amount": {
+            "default": "0.00",
+            "title": "Total Confirmed Amount",
+            "type": "string"
+          },
+          "total_items": {
+            "default": 0,
+            "title": "Total Items",
+            "type": "integer"
+          },
+          "total_pledged_amount": {
+            "default": "0.00",
+            "title": "Total Pledged Amount",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "title",
+          "is_public",
+          "has_share_token",
+          "allow_group_gifting",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "GiftRegistryOut",
+        "type": "object"
+      },
+      "GiftRegistryUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "allow_group_gifting": {
+            "default": true,
+            "title": "Allow Group Gifting",
+            "type": "boolean"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "is_public": {
+            "default": false,
+            "title": "Is Public",
+            "type": "boolean"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "GiftRegistryUpdate",
+        "type": "object"
+      },
+      "GiftReservationOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "gift_item_id": {
+            "format": "uuid",
+            "title": "Gift Item Id",
+            "type": "string"
+          },
+          "gift_item_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gift Item Title"
+          },
+          "guest_alias": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Alias"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/GiftReservationStatus"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "gift_item_id",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "GiftReservationOut",
+        "type": "object"
+      },
+      "GiftReservationStatus": {
+        "enum": [
+          "reserved",
+          "cancelled",
+          "fulfilled",
+          "expired"
+        ],
+        "title": "GiftReservationStatus",
+        "type": "string"
+      },
+      "GiftReservationUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/GiftReservationStatus"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "GiftReservationUpdate",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1900,6 +2680,29 @@
           "version"
         ],
         "title": "HealthOut",
+        "type": "object"
+      },
+      "HostConfirmationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmation_note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmation Note"
+          },
+          "verification_method": {
+            "$ref": "#/components/schemas/VerificationMethod",
+            "default": "host_manual_confirmation"
+          }
+        },
+        "title": "HostConfirmationRequest",
         "type": "object"
       },
       "LocationIn": {
@@ -2925,6 +3728,298 @@
         "title": "ProposedTaskItem",
         "type": "object"
       },
+      "PublicCancelReservationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "cancellation_token": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Cancellation Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cancellation_token"
+        ],
+        "title": "PublicCancelReservationRequest",
+        "type": "object"
+      },
+      "PublicContributionConfirmationOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "string"
+          },
+          "contribution_id": {
+            "format": "uuid",
+            "title": "Contribution Id",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "gift_item_id": {
+            "format": "uuid",
+            "title": "Gift Item Id",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "contribution_id",
+          "gift_item_id",
+          "amount",
+          "currency",
+          "message"
+        ],
+        "title": "PublicContributionConfirmationOut",
+        "type": "object"
+      },
+      "PublicContributionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "default": "INR",
+            "title": "Currency",
+            "type": "string"
+          },
+          "guest_alias": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Alias"
+          },
+          "idempotency_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "idempotency_key"
+        ],
+        "title": "PublicContributionRequest",
+        "type": "object"
+      },
+      "PublicGiftItemOut": {
+        "properties": {
+          "confirmed_amount": {
+            "title": "Confirmed Amount",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "gift_mode": {
+            "$ref": "#/components/schemas/GiftMode"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "item_type": {
+            "$ref": "#/components/schemas/GiftItemType"
+          },
+          "pledged_amount": {
+            "title": "Pledged Amount",
+            "type": "string"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/GiftItemPriority"
+          },
+          "product_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Url"
+          },
+          "remaining_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Amount"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Amount"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "item_type",
+          "gift_mode",
+          "currency",
+          "priority",
+          "pledged_amount",
+          "confirmed_amount",
+          "status"
+        ],
+        "title": "PublicGiftItemOut",
+        "type": "object"
+      },
+      "PublicRegistryOut": {
+        "properties": {
+          "allow_group_gifting": {
+            "title": "Allow Group Gifting",
+            "type": "boolean"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "event_label": {
+            "title": "Event Label",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PublicGiftItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "event_label",
+          "items",
+          "allow_group_gifting",
+          "currency"
+        ],
+        "title": "PublicRegistryOut",
+        "type": "object"
+      },
+      "PublicReservationConfirmationOut": {
+        "properties": {
+          "cancellation_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancellation Token"
+          },
+          "gift_item_id": {
+            "format": "uuid",
+            "title": "Gift Item Id",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "reservation_id": {
+            "format": "uuid",
+            "title": "Reservation Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reservation_id",
+          "gift_item_id",
+          "message"
+        ],
+        "title": "PublicReservationConfirmationOut",
+        "type": "object"
+      },
+      "PublicReserveRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "guest_alias": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Alias"
+          },
+          "idempotency_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key"
+        ],
+        "title": "PublicReserveRequest",
+        "type": "object"
+      },
       "QuotationComparisonGroup": {
         "properties": {
           "category": {
@@ -3122,6 +4217,36 @@
         "title": "ReadinessOut",
         "type": "object"
       },
+      "ShareLinkOut": {
+        "properties": {
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "raw_token": {
+            "title": "Raw Token",
+            "type": "string"
+          },
+          "share_url": {
+            "title": "Share Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "share_url",
+          "raw_token"
+        ],
+        "title": "ShareLinkOut",
+        "type": "object"
+      },
       "SharedEventContext": {
         "additionalProperties": false,
         "properties": {
@@ -3144,6 +4269,16 @@
             },
             "title": "Functions",
             "type": "array"
+          },
+          "gift_summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextGiftSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "permissions": {
             "$ref": "#/components/schemas/ContextPermissions"
@@ -4611,6 +5746,14 @@
         },
         "title": "VendorUpdate",
         "type": "object"
+      },
+      "VerificationMethod": {
+        "enum": [
+          "host_manual_confirmation",
+          "payment_provider_webhook"
+        ],
+        "title": "VerificationMethod",
+        "type": "string"
       }
     },
     "securitySchemes": {
@@ -6635,6 +7778,662 @@
         ]
       }
     },
+    "/api/v1/events/{event_id}/gift-contributions": {
+      "get": {
+        "operationId": "list_contributions_api_v1_events__event_id__gift_contributions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GiftContributionOut"
+                  },
+                  "title": "Response List Contributions Api V1 Events  Event Id  Gift Contributions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List all group gift contributions for reconciliation",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-contributions/{contribution_id}/confirm": {
+      "post": {
+        "operationId": "confirm_contribution_api_v1_events__event_id__gift_contributions__contribution_id__confirm_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "contribution_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Contribution Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HostConfirmationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GiftContributionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Host manually confirms receipt of an offline group contribution",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-registry": {
+      "get": {
+        "operationId": "get_registry_api_v1_events__event_id__gift_registry_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GiftRegistryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get event gift registry and private metrics",
+        "tags": [
+          "gifts"
+        ]
+      },
+      "put": {
+        "operationId": "update_registry_api_v1_events__event_id__gift_registry_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GiftRegistryUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GiftRegistryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create or update event gift registry settings",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-registry/items": {
+      "get": {
+        "operationId": "list_items_api_v1_events__event_id__gift_registry_items_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GiftItemOut"
+                  },
+                  "title": "Response List Items Api V1 Events  Event Id  Gift Registry Items Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List all gift wishlist items",
+        "tags": [
+          "gifts"
+        ]
+      },
+      "post": {
+        "operationId": "create_item_api_v1_events__event_id__gift_registry_items_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GiftItemCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GiftItemOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add a new gift wishlist item",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-registry/items/{item_id}": {
+      "delete": {
+        "operationId": "deactivate_item_api_v1_events__event_id__gift_registry_items__item_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Deactivate a gift wishlist item",
+        "tags": [
+          "gifts"
+        ]
+      },
+      "patch": {
+        "operationId": "update_item_api_v1_events__event_id__gift_registry_items__item_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GiftItemUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GiftItemOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update a gift wishlist item",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-registry/share-link": {
+      "delete": {
+        "operationId": "revoke_share_link_api_v1_events__event_id__gift_registry_share_link_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Revoke current public share link",
+        "tags": [
+          "gifts"
+        ]
+      },
+      "post": {
+        "operationId": "generate_share_link_api_v1_events__event_id__gift_registry_share_link_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareLinkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Generate or rotate public share token for gift registry",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-reservations": {
+      "get": {
+        "operationId": "list_reservations_api_v1_events__event_id__gift_reservations_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GiftReservationOut"
+                  },
+                  "title": "Response List Reservations Api V1 Events  Event Id  Gift Reservations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List guest reservations for the event",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/gift-reservations/{reservation_id}": {
+      "patch": {
+        "operationId": "update_reservation_api_v1_events__event_id__gift_reservations__reservation_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "reservation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Reservation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GiftReservationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GiftReservationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update reservation status (e.g. fulfilled or cancelled)",
+        "tags": [
+          "gifts"
+        ]
+      }
+    },
     "/api/v1/events/{event_id}/plans/generate": {
       "post": {
         "description": "Generate a structured, personalized wedding plan proposal using Gemini.",
@@ -8290,6 +10089,227 @@
         "summary": "Public, non-secret application configuration",
         "tags": [
           "meta"
+        ]
+      }
+    },
+    "/api/v1/public/registries/{share_token}": {
+      "get": {
+        "operationId": "get_public_registry_api_v1_public_registries__share_token__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "share_token",
+            "required": true,
+            "schema": {
+              "title": "Share Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicRegistryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get public gift registry and wishlist without authentication",
+        "tags": [
+          "public_gifts"
+        ]
+      }
+    },
+    "/api/v1/public/registries/{share_token}/items/{item_id}/contributions": {
+      "post": {
+        "operationId": "public_contribute_item_api_v1_public_registries__share_token__items__item_id__contributions_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "share_token",
+            "required": true,
+            "schema": {
+              "title": "Share Token",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicContributionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicContributionConfirmationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Pledge a contribution towards a group gift item",
+        "tags": [
+          "public_gifts"
+        ]
+      }
+    },
+    "/api/v1/public/registries/{share_token}/items/{item_id}/reserve": {
+      "post": {
+        "operationId": "public_reserve_item_api_v1_public_registries__share_token__items__item_id__reserve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "share_token",
+            "required": true,
+            "schema": {
+              "title": "Share Token",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicReserveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReservationConfirmationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reserve an individual gift item (account-free)",
+        "tags": [
+          "public_gifts"
+        ]
+      }
+    },
+    "/api/v1/public/registries/{share_token}/reservations/{reservation_id}/cancel": {
+      "post": {
+        "operationId": "public_cancel_reservation_api_v1_public_registries__share_token__reservations__reservation_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "share_token",
+            "required": true,
+            "schema": {
+              "title": "Share Token",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "reservation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Reservation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicCancelReservationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel reservation with one-time cancellation token",
+        "tags": [
+          "public_gifts"
         ]
       }
     }

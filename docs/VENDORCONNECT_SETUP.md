@@ -41,3 +41,4 @@ VendorConnect is the central vendor coordination workspace for celebrations on U
 ### 3.4 Linking to BudgetAI
 1. When creating an expense in BudgetAI, select the vendor from the vendor dropdown.
 2. In VendorConnect, open the vendor and click **Expenses & Budget** to view all ledger items and total amounts paid to that vendor.
+

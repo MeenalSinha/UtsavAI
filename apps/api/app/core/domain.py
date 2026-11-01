@@ -99,6 +99,8 @@ class Permission(StrEnum):
     TIMELINE_PROPOSE = "timeline.propose"
     VENDOR_READ = "vendor.read"
     VENDOR_MANAGE = "vendor.manage"
+    GIFT_REGISTRY_READ = "gift_registry.read"
+    GIFT_REGISTRY_MANAGE = "gift_registry.manage"
 
 
 ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
@@ -121,6 +123,8 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.TIMELINE_PROPOSE,
             Permission.VENDOR_READ,
             Permission.VENDOR_MANAGE,
+            Permission.GIFT_REGISTRY_READ,
+            Permission.GIFT_REGISTRY_MANAGE,
         }
     ),
     MemberRole.VIEWER: frozenset(
@@ -130,6 +134,7 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.EXPENSE_READ,
             Permission.TASK_READ,
             Permission.VENDOR_READ,
+            Permission.GIFT_REGISTRY_READ,
         }
     ),
 }
@@ -150,6 +155,43 @@ class QuoteStatus(StrEnum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
     EXPIRED = "expired"
+
+
+class GiftItemType(StrEnum):
+    PRODUCT = "product"
+    CASH_FUND = "cash_fund"
+    EXPERIENCE = "experience"
+    OTHER = "other"
+
+
+class GiftMode(StrEnum):
+    INDIVIDUAL = "individual"
+    GROUP = "group"
+
+
+class GiftItemPriority(StrEnum):
+    NICE_TO_HAVE = "nice_to_have"
+    IMPORTANT = "important"
+    HIGH_PRIORITY = "high_priority"
+
+
+class GiftReservationStatus(StrEnum):
+    RESERVED = "reserved"
+    CANCELLED = "cancelled"
+    FULFILLED = "fulfilled"
+    EXPIRED = "expired"
+
+
+class GiftContributionStatus(StrEnum):
+    PLEDGED = "pledged"
+    VERIFIED = "verified"
+    WITHDRAWN = "withdrawn"
+    REFUNDED = "refunded"
+
+
+class VerificationMethod(StrEnum):
+    HOST_MANUAL_CONFIRMATION = "host_manual_confirmation"
+    PAYMENT_PROVIDER_WEBHOOK = "payment_provider_webhook"
 
 
 class ProposalStatus(StrEnum):

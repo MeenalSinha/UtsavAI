@@ -119,3 +119,4 @@ create trigger vendor_quotes_touch_event_trigger
 create trigger vendor_quotes_after_insert_trigger
   after insert or delete on public.vendor_quotes
   for each row execute function app.quote_touch_event();
+

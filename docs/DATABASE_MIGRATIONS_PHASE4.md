@@ -54,3 +54,4 @@ Phase 4 introduces 3 database migrations to PostgreSQL via Supabase:
   `alter table public.expenses add constraint expenses_vendor_fk foreign key (vendor_id, event_id) references public.event_vendors (id, event_id) on delete set null;`
 - Creates composite index `idx_expenses_event_vendor on public.expenses (event_id, vendor_id)`.
 - Guarantees complete cross-event tenant isolation between expenses and vendors.
+

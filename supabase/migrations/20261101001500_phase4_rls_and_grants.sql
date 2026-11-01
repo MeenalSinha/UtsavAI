@@ -71,3 +71,4 @@ create policy vendor_quotes_update on public.vendor_quotes
      where v.id = vendor_quotes.vendor_id
        and app.is_event_member(v.event_id, array['owner', 'editor'])
   ));
+

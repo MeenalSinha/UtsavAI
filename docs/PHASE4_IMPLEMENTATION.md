@@ -88,3 +88,4 @@ Three migrations were introduced in canonical sequence:
   - Unit tests: passed.
   - Migration & RLS guardrails: verified clean.
   - Secret scanner: 0 exposed keys, tokens, or credentials.
+

@@ -8,3 +8,4 @@ alter table public.expenses
   on delete set null;
 
 create index if not exists expenses_vendor_idx on public.expenses (vendor_id) where vendor_id is not null;
+

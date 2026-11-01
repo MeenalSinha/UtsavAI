@@ -68,7 +68,7 @@ def test_vendor_lifecycle_and_quotes(client, make_user, admin):
     assert v_details["status"] == "quoted"
     assert len(v_details["quotes"]) == 1
 
-    # 3. Shortlist quotation and verify status sync
+    # 3. Shortlist quotation
     q_patch = client.patch(
         f"{BASE}/events/{event_id}/vendors/{vendor_id}/quotes/{quote_id}",
         json={"status": "shortlisted"},
@@ -77,10 +77,11 @@ def test_vendor_lifecycle_and_quotes(client, make_user, admin):
     assert q_patch.status_code == 200
     assert q_patch.json()["status"] == "shortlisted"
 
+    # Quotation status update is semantically distinct from vendor booking status
     v_details2 = client.get(f"{BASE}/events/{event_id}/vendors/{vendor_id}", headers=u.headers).json()
-    assert v_details2["status"] == "shortlisted"
+    assert v_details2["status"] == "quoted"
 
-    # 4. Accept quotation and verify vendor marked booked
+    # 4. Accept quotation and verify quotation is accepted
     q_accept = client.patch(
         f"{BASE}/events/{event_id}/vendors/{vendor_id}/quotes/{quote_id}",
         json={"status": "accepted"},
@@ -88,6 +89,15 @@ def test_vendor_lifecycle_and_quotes(client, make_user, admin):
     )
     assert q_accept.status_code == 200
     assert q_accept.json()["status"] == "accepted"
+
+    # Vendor requires an explicit booking decision from the host
+    v_patch = client.patch(
+        f"{BASE}/events/{event_id}/vendors/{vendor_id}",
+        json={"status": "booked"},
+        headers=u.headers,
+    )
+    assert v_patch.status_code == 200
+    assert v_patch.json()["status"] == "booked"
 
     v_details3 = client.get(f"{BASE}/events/{event_id}/vendors/{vendor_id}", headers=u.headers).json()
     assert v_details3["status"] == "booked"

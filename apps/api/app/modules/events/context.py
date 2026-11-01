@@ -19,6 +19,7 @@ from app.modules.events import repository as events_repo
 from app.modules.events.permissions import require_permission
 from app.modules.functions import repository as functions_repo
 from app.modules.functions.schemas import FunctionOut
+from app.modules.gifts.schemas import ContextGiftSummary
 from app.modules.preferences import repository as preferences_repo
 from app.modules.tasks import repository as tasks_repo
 from app.modules.vendors import repository as vendors_repo
@@ -123,6 +124,7 @@ class SharedEventContext(BaseModel):
     budget: ContextBudgetSummary | None = None
     timeline: ContextTimelineSummary | None = None
     vendor_summary: ContextVendorSummary | None = None
+    gift_summary: ContextGiftSummary | None = None
 
 
 def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID) -> SharedEventContext:
@@ -265,6 +267,11 @@ def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID)
                 ],
             )
 
+        # Build GiftCircle summary
+        from app.modules.gifts import service as gifts_service
+
+        context_gift = gifts_service.get_event_gift_summary(conn, event_id)
+
         return SharedEventContext(
             event=event_summary,
             preferences=preferences,
@@ -273,4 +280,5 @@ def build_event_context(db: Database, principal: Principal, event_id: uuid.UUID)
             budget=context_budget,
             timeline=context_timeline,
             vendor_summary=context_vendor,
+            gift_summary=context_gift if context_gift.registry_exists else None,
         )

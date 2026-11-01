@@ -12,7 +12,8 @@ def record(
     conn: Connection,
     *,
     event_id: uuid.UUID,
-    actor_user_id: uuid.UUID,
+    actor_user_id: uuid.UUID | None = None,
+    actor_type: str = "user",
     action: str,
     entity_type: str,
     entity_id: uuid.UUID | None,
@@ -23,10 +24,11 @@ def record(
     conn.execute(
         "insert into public.audit_logs "
         "(event_id, actor_user_id, actor_type, action, entity_type, entity_id, metadata, request_id) "
-        "values (%s, %s, 'user', %s, %s, %s, %s, %s)",
+        "values (%s, %s, %s, %s, %s, %s, %s, %s)",
         (
             event_id,
             actor_user_id,
+            actor_type,
             action,
             entity_type,
             entity_id,

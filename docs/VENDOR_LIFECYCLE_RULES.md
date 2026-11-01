@@ -43,3 +43,4 @@ Individual commercial proposals follow this state cycle:
    - Deleting a vendor from the UI or API sets `archived_at = now()`.
    - Direct SQL `DELETE` is blocked by least-privilege role permissions (no `DELETE` grant for `utsavai_app`).
    - Historical quotes and past ledger expenses referencing the vendor remain intact for financial reporting.
+

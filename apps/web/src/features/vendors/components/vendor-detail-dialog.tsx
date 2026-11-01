@@ -273,7 +273,7 @@ export function VendorDetailDialog({
                                 className="text-emerald-700 border-emerald-300 hover:bg-emerald-50"
                                 onClick={() => handleUpdateQuoteStatus(q, "accepted")}
                               >
-                                Accept & Book
+                                Accept Quote
                               </Button>
                             )}
                             {q.status !== "shortlisted" && q.status !== "accepted" && (

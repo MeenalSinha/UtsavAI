@@ -34,3 +34,4 @@ On each quotation item, the engine audits for missing commercial details:
 - **Missing Validity Deadline**: If `valid_until` is null, warns: *"No offer validity deadline specified"*.
 - **Incomplete Contact Data**: If the vendor record lacks both a phone number and an email address, warns: *"No contact phone or email recorded for this vendor"*.
 - **Brief Scope Description**: If `scope_summary` is under 30 characters, warns: *"Brief scope description provided: confirm deliverables and exclusions directly with vendor"*.
+

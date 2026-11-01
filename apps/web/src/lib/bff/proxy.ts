@@ -59,6 +59,16 @@ const ROUTES: { pattern: RegExp; methods: ReadonlySet<string> }[] = [
   { pattern: new RegExp(`^events/${UUID}/vendors/${UUID}/quotes$`), methods: new Set(["GET", "POST"]) },
   { pattern: new RegExp(`^events/${UUID}/vendors/${UUID}/quotes/${UUID}$`), methods: new Set(["PATCH"]) },
   { pattern: new RegExp(`^events/${UUID}/vendor-quote-comparison$`), methods: new Set(["GET"]) },
+  // Phase 5: GiftCircle (Host)
+  { pattern: new RegExp(`^events/${UUID}/gift-registry$`), methods: new Set(["GET", "POST", "PATCH"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/share-link$`), methods: new Set(["GET", "POST", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/overview$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/items$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/items/${UUID}$`), methods: new Set(["PATCH", "DELETE"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/reservations$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/reservations/${UUID}/cancel$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/contributions$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/gift-registry/contributions/${UUID}/verify$`), methods: new Set(["POST"]) },
 ];
 const FORWARDED_QUERY_KEYS = new Set([
   "limit",
@@ -69,6 +79,8 @@ const FORWARDED_QUERY_KEYS = new Set([
   "category",
   "search",
   "priority",
+  "item_type",
+  "gift_mode",
 ]);
 const MUTATING = new Set(["POST", "PATCH", "PUT", "DELETE"]);
 const MAX_BODY_BYTES = 64 * 1024;

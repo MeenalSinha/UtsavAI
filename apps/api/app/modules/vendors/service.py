@@ -551,14 +551,9 @@ def update_quote(
         )
         assert row is not None
 
-        # Synchronize vendor status if quotation status moves to shortlisted or accepted
-        if req.status == QuoteStatus.SHORTLISTED and v["status"] not in (
-            VendorStatus.BOOKED.value,
-            VendorStatus.SHORTLISTED.value,
-        ):
-            repo.update_vendor(conn, event_id, vendor_id, status=VendorStatus.SHORTLISTED.value)
-        elif req.status == QuoteStatus.ACCEPTED and v["status"] != VendorStatus.BOOKED.value:
-            repo.update_vendor(conn, event_id, vendor_id, status=VendorStatus.BOOKED.value)
+        # Note: Quotation acceptance, vendor booking status, and expense payments remain
+        # semantically distinct. Accepting a quote does not automatically force vendor status
+        # to 'booked', which requires an explicit host booking decision.
 
         audit.record(
             conn,

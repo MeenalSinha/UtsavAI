@@ -41,3 +41,4 @@
   - `renders deterministic quotation comparison view with scope difference alerts`: Verifies side-by-side comparison rendering, guest capacity discrepancy alerts, and proposal booking.
 - `src/features/events/__tests__/components.test.tsx`:
   - Updated assertion verifying `VendorConnect` is unlocked in `workspace-nav.tsx`.
+

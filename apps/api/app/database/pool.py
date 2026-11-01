@@ -76,6 +76,25 @@ class Database:
             logger.error("db_operational_error", extra={"error_class": type(exc).__name__})
             raise DependencyUnavailableError("The database is temporarily unavailable.") from exc
 
+    @contextmanager
+    def public_transaction(self, share_token_hash: str, request_id: str) -> Iterator[Connection]:
+        """Transaction with public registry capability context. Commits on success, rolls back on error."""
+        try:
+            with self.pool.connection() as conn:
+                conn.execute(
+                    "select set_config('app.user_id', '', true), "
+                    "set_config('app.request_id', %s, true), "
+                    "set_config('app.share_token_hash', %s, true)",
+                    (request_id, share_token_hash),
+                )
+                yield conn
+        except PoolTimeout as exc:
+            logger.error("db_pool_timeout")
+            raise DependencyUnavailableError("The database is temporarily unavailable.") from exc
+        except psycopg.OperationalError as exc:
+            logger.error("db_operational_error", extra={"error_class": type(exc).__name__})
+            raise DependencyUnavailableError("The database is temporarily unavailable.") from exc
+
     def verify_runtime_role(self) -> None:
         """Refuse to run as a privileged role. Called at startup and by readiness."""
         with self.transaction(None, "startup") as conn:

@@ -215,7 +215,7 @@ export function QuoteComparisonView({ eventId, onRefreshRequested }: QuoteCompar
                         className="text-emerald-700 border-emerald-300 hover:bg-emerald-50 text-xs"
                         onClick={() => handleStatusChange(q, "accepted")}
                       >
-                        <CheckCircle2 className="mr-1 h-3.5 w-3.5" /> Book Proposal
+                        <CheckCircle2 className="mr-1 h-3.5 w-3.5" /> Accept Proposal
                       </Button>
                     )}
                     {!isShortlisted && !isAccepted && (

@@ -15,6 +15,8 @@ export const routes = {
   eventBudget: (id: string) => `/events/${id}/budget`,
   eventTimeline: (id: string) => `/events/${id}/timeline`,
   eventVendors: (id: string) => `/events/${id}/vendors`,
+  eventGiftCircle: (id: string) => `/events/${id}/giftcircle`,
+  publicGiftRegistry: (token: string) => `/g/${token}`,
   profile: "/profile",
 } as const;
 

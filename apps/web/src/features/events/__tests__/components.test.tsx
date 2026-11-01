@@ -77,7 +77,7 @@ describe("EventWorkspace", () => {
     expect(screen.getByRole("heading", { level: 1, name: /Aarav and Meera/ })).toBeInTheDocument();
     expect(screen.getByText("Expected guests")).toBeInTheDocument();
     const nav = screen.getByRole("navigation", { name: /event modules/i });
-    for (const name of ["GiftCircle"]) {
+    for (const name of ["Adaptive Plan"]) {
       const item = within(nav).getByText(name).closest("span[aria-disabled]");
       expect(item).toHaveAttribute("aria-disabled", "true");
     }
@@ -89,6 +89,7 @@ describe("EventWorkspace", () => {
     expect(within(nav).getByRole("link", { name: "BudgetAI" })).toBeInTheDocument();
     expect(within(nav).getByRole("link", { name: "TimelineAI" })).toBeInTheDocument();
     expect(within(nav).getByRole("link", { name: "VendorConnect" })).toBeInTheDocument();
+    expect(within(nav).getByRole("link", { name: "GiftCircle" })).toBeInTheDocument();
   });
 
   it("lets an owner edit and archive", async () => {

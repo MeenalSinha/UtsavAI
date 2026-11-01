@@ -29,6 +29,8 @@ function getModuleHref(key: string, eventId: string): string {
       return routes.eventVendors(eventId);
     case "giftcircle":
       return routes.eventGiftCircle(eventId);
+    case "adaptiveplan":
+      return routes.eventAdaptive(eventId);
     default:
       return routes.event(eventId);
   }

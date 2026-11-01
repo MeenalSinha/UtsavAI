@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    adaptive,
     ai,
     budget,
     context,
@@ -30,3 +31,4 @@ api_router.include_router(tasks.router)
 api_router.include_router(vendors.router)
 api_router.include_router(gifts.router)
 api_router.include_router(public_gifts.router)
+api_router.include_router(adaptive.router)

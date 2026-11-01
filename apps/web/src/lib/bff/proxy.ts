@@ -69,9 +69,16 @@ const ROUTES: { pattern: RegExp; methods: ReadonlySet<string> }[] = [
   { pattern: new RegExp(`^events/${UUID}/gift-registry/reservations/${UUID}/cancel$`), methods: new Set(["POST"]) },
   { pattern: new RegExp(`^events/${UUID}/gift-registry/contributions$`), methods: new Set(["GET"]) },
   { pattern: new RegExp(`^events/${UUID}/gift-registry/contributions/${UUID}/verify$`), methods: new Set(["POST"]) },
+  // Phase 6: Adaptive Planning Engine
+  { pattern: new RegExp(`^events/${UUID}/change-proposals$`), methods: new Set(["GET", "POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/change-proposals/interpret$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/change-proposals/${UUID}$`), methods: new Set(["GET"]) },
+  { pattern: new RegExp(`^events/${UUID}/change-proposals/${UUID}/accept$`), methods: new Set(["POST"]) },
+  { pattern: new RegExp(`^events/${UUID}/change-proposals/${UUID}/reject$`), methods: new Set(["POST"]) },
 ];
 const FORWARDED_QUERY_KEYS = new Set([
   "limit",
+  "offset",
   "cursor",
   "status",
   "include_archived",

@@ -15,7 +15,7 @@ The project will be built in eight implementation phases after this Phase 0 blue
 | **3** | Budget & Timeline Intelligence | Budget/category/expense operations, deterministic summaries, task CRUD, task dependencies, schedule proposals | Financial totals reconcile exactly; dependency cycles are rejected; generated plans remain proposals until accepted. | **COMPLETED** |
 | **4** | VendorConnect | Event-scoped vendors, quotations, comparison and booking-status tracking | Quotes can be entered/compared without implying external verification or payment. | **COMPLETED** |
 | **5** | GiftCircle | Registry management, token generation/revocation, public registry UI, account-free reservation and group pledges, host reconciliation | Public no-login journey passes; concurrent duplicate reservations and over-pledges are prevented; no money is collected. | **COMPLETED** |
-| **6** | Adaptive Planning Engine | Typed change requests, deterministic impact map, AI explanations/options, preview, approval and atomic revision-checked application | A material requirement change previews impacts across modules and applies only after owner approval. | Planned |
+| **6** | Adaptive Planning Engine | Typed change requests, deterministic impact map, AI explanations/options, preview, approval and atomic revision-checked application | A material requirement change previews impacts across modules and applies only after owner approval. | **COMPLETED** |
 | **7** | Finalization & Deployment | Full testing, accessibility, threat review, observability, demo fixtures, documentation, deployment and final audit | Release gates in PRD, security and testing docs all pass. | Planned |
 
 ## 2. Phase working rules

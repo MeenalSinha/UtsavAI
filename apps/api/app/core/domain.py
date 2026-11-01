@@ -101,6 +101,9 @@ class Permission(StrEnum):
     VENDOR_MANAGE = "vendor.manage"
     GIFT_REGISTRY_READ = "gift_registry.read"
     GIFT_REGISTRY_MANAGE = "gift_registry.manage"
+    ADAPTIVE_PLAN_READ = "adaptive_plan.read"
+    ADAPTIVE_PLAN_PROPOSE = "adaptive_plan.propose"
+    ADAPTIVE_PLAN_MANAGE = "adaptive_plan.manage"
 
 
 ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
@@ -125,6 +128,8 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.VENDOR_MANAGE,
             Permission.GIFT_REGISTRY_READ,
             Permission.GIFT_REGISTRY_MANAGE,
+            Permission.ADAPTIVE_PLAN_READ,
+            Permission.ADAPTIVE_PLAN_PROPOSE,
         }
     ),
     MemberRole.VIEWER: frozenset(
@@ -135,6 +140,7 @@ ROLE_PERMISSIONS: dict[MemberRole, frozenset[Permission]] = {
             Permission.TASK_READ,
             Permission.VENDOR_READ,
             Permission.GIFT_REGISTRY_READ,
+            Permission.ADAPTIVE_PLAN_READ,
         }
     ),
 }
@@ -200,6 +206,14 @@ class ProposalStatus(StrEnum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
     STALE = "stale"
+
+
+class ChangeProposalStatus(StrEnum):
+    PROPOSED = "proposed"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    STALE = "stale"
+    EXPIRED = "expired"
 
 
 class ProposalType(StrEnum):

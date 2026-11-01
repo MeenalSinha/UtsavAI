@@ -46,6 +46,7 @@ def test_expected_tables_exist_with_rls_enabled(admin):
         "audit_logs": True,
         "budget_categories": True,
         "budgets": True,
+        "change_proposals": True,
         "event_functions": True,
         "event_members": True,
         "event_preferences": True,

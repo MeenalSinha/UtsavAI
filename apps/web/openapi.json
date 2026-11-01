@@ -1,6 +1,57 @@
 {
   "components": {
     "schemas": {
+      "AffectedRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "change_nature": {
+            "title": "Change Nature",
+            "type": "string"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details"
+          },
+          "entity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Id"
+          },
+          "entity_name": {
+            "title": "Entity Name",
+            "type": "string"
+          },
+          "entity_type": {
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "module": {
+            "title": "Module",
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "entity_type",
+          "entity_name",
+          "change_nature"
+        ],
+        "title": "AffectedRecord",
+        "type": "object"
+      },
       "BudgetAcceptRequest": {
         "additionalProperties": false,
         "properties": {
@@ -187,6 +238,46 @@
           }
         },
         "title": "BudgetCategoryUpdate",
+        "type": "object"
+      },
+      "BudgetChangeItem-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "total_limit": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Limit"
+          }
+        },
+        "title": "BudgetChangeItem",
+        "type": "object"
+      },
+      "BudgetChangeItem-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "total_limit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Limit"
+          }
+        },
+        "title": "BudgetChangeItem",
         "type": "object"
       },
       "BudgetCreate": {
@@ -504,6 +595,40 @@
         "title": "BudgetUpdate",
         "type": "object"
       },
+      "CalculationItem": {
+        "additionalProperties": false,
+        "properties": {
+          "after_value": {
+            "title": "After Value",
+            "type": "string"
+          },
+          "before_value": {
+            "title": "Before Value",
+            "type": "string"
+          },
+          "delta": {
+            "title": "Delta",
+            "type": "string"
+          },
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "unit": {
+            "default": "",
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "metric",
+          "before_value",
+          "after_value",
+          "delta"
+        ],
+        "title": "CalculationItem",
+        "type": "object"
+      },
       "CategorySummaryItem": {
         "additionalProperties": false,
         "properties": {
@@ -558,6 +683,221 @@
         ],
         "title": "CategorySummaryItem",
         "type": "object"
+      },
+      "ChangeProposalCreate-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "base_revision": {
+            "minimum": 1.0,
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "budget_changes": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BudgetChangeItem-Input"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "event_changes": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EventChangeItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "function_changes": {
+            "items": {
+              "$ref": "#/components/schemas/FunctionChangeItem"
+            },
+            "title": "Function Changes",
+            "type": "array"
+          },
+          "request_text": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Request Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_revision",
+          "request_text"
+        ],
+        "title": "ChangeProposalCreate",
+        "type": "object"
+      },
+      "ChangeProposalCreate-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "base_revision": {
+            "minimum": 1.0,
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "budget_changes": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BudgetChangeItem-Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "event_changes": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EventChangeItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "function_changes": {
+            "items": {
+              "$ref": "#/components/schemas/FunctionChangeItem"
+            },
+            "title": "Function Changes",
+            "type": "array"
+          },
+          "request_text": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Request Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_revision",
+          "request_text"
+        ],
+        "title": "ChangeProposalCreate",
+        "type": "object"
+      },
+      "ChangeProposalOut": {
+        "properties": {
+          "accepted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "accepted_revision": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted Revision"
+          },
+          "ai_explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Explanation"
+          },
+          "base_revision": {
+            "title": "Base Revision",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by": {
+            "format": "uuid",
+            "title": "Created By",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "impact_result": {
+            "$ref": "#/components/schemas/ImpactResult"
+          },
+          "request_text": {
+            "title": "Request Text",
+            "type": "string"
+          },
+          "requested_changes": {
+            "additionalProperties": true,
+            "title": "Requested Changes",
+            "type": "object"
+          },
+          "rules_version": {
+            "default": "1.0.0",
+            "title": "Rules Version",
+            "type": "string"
+          },
+          "schema_version": {
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ChangeProposalStatus"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "event_id",
+          "created_by",
+          "base_revision",
+          "request_text",
+          "requested_changes",
+          "impact_result",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ChangeProposalOut",
+        "type": "object"
+      },
+      "ChangeProposalStatus": {
+        "enum": [
+          "proposed",
+          "accepted",
+          "rejected",
+          "stale",
+          "expired"
+        ],
+        "title": "ChangeProposalStatus",
+        "type": "string"
       },
       "ContextBudgetSummary": {
         "additionalProperties": false,
@@ -1128,6 +1468,109 @@
         "title": "ErrorEnvelope",
         "type": "object"
       },
+      "EventChangeItem": {
+        "additionalProperties": false,
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "country_code": {
+            "anyOf": [
+              {
+                "maxLength": 2,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country Code"
+          },
+          "end_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End At"
+          },
+          "expected_guest_count": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Guest Count"
+          },
+          "location_name": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location Name"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "start_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start At"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "title": "EventChangeItem",
+        "type": "object"
+      },
       "EventCreate": {
         "additionalProperties": false,
         "properties": {
@@ -1670,6 +2113,98 @@
           }
         },
         "title": "ExpenseUpdate",
+        "type": "object"
+      },
+      "FunctionChangeItem": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "add",
+              "update",
+              "archive"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "end_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End At"
+          },
+          "expected_guest_count": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Guest Count"
+          },
+          "function_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function Id"
+          },
+          "function_type": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function Type"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "start_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start At"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "FunctionChangeItem",
         "type": "object"
       },
       "FunctionCreate": {
@@ -2705,6 +3240,100 @@
         "title": "HostConfirmationRequest",
         "type": "object"
       },
+      "ImpactResult": {
+        "additionalProperties": false,
+        "properties": {
+          "affected_modules": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Affected Modules",
+            "type": "array"
+          },
+          "affected_records": {
+            "items": {
+              "$ref": "#/components/schemas/AffectedRecord"
+            },
+            "title": "Affected Records",
+            "type": "array"
+          },
+          "calculations": {
+            "items": {
+              "$ref": "#/components/schemas/CalculationItem"
+            },
+            "title": "Calculations",
+            "type": "array"
+          },
+          "rules_version": {
+            "default": "1.0.0",
+            "title": "Rules Version",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "suggested_options": {
+            "items": {
+              "$ref": "#/components/schemas/SuggestedOption"
+            },
+            "title": "Suggested Options",
+            "type": "array"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/WarningItem"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "severity"
+        ],
+        "title": "ImpactResult",
+        "type": "object"
+      },
+      "InterpretRequestPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "maxLength": 4000,
+            "minLength": 2,
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "InterpretRequestPayload",
+        "type": "object"
+      },
+      "InterpretedChangeResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_request": {
+            "$ref": "#/components/schemas/ChangeProposalCreate-Output"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary",
+          "candidate_request"
+        ],
+        "title": "InterpretedChangeResponse",
+        "type": "object"
+      },
       "LocationIn": {
         "additionalProperties": false,
         "properties": {
@@ -3465,6 +4094,39 @@
         "title": "ProfileUpdate",
         "type": "object"
       },
+      "ProposalAcceptRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "selected_option_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Selected Option Ids",
+            "type": "array"
+          }
+        },
+        "title": "ProposalAcceptRequest",
+        "type": "object"
+      },
+      "ProposalRejectRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "title": "ProposalRejectRequest",
+        "type": "object"
+      },
       "ProposedCategoryAllocation": {
         "additionalProperties": false,
         "properties": {
@@ -3579,6 +4241,35 @@
           "name"
         ],
         "title": "ProposedFunction",
+        "type": "object"
+      },
+      "ProposedOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "op_code": {
+            "title": "Op Code",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "target_module": {
+            "title": "Target Module",
+            "type": "string"
+          }
+        },
+        "required": [
+          "op_code",
+          "target_module",
+          "description"
+        ],
+        "title": "ProposedOperation",
         "type": "object"
       },
       "ProposedTask": {
@@ -4314,6 +5005,42 @@
           "permissions"
         ],
         "title": "SharedEventContext",
+        "type": "object"
+      },
+      "SuggestedOption": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "operations": {
+            "items": {
+              "$ref": "#/components/schemas/ProposedOperation"
+            },
+            "title": "Operations",
+            "type": "array"
+          },
+          "selected_by_default": {
+            "default": true,
+            "title": "Selected By Default",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description"
+        ],
+        "title": "SuggestedOption",
         "type": "object"
       },
       "TaskCreate": {
@@ -5754,6 +6481,41 @@
         ],
         "title": "VerificationMethod",
         "type": "string"
+      },
+      "WarningItem": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "recommended_action": {
+            "title": "Recommended Action",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "severity",
+          "recommended_action"
+        ],
+        "title": "WarningItem",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -7223,6 +7985,407 @@
         "summary": "Get authoritative financial summaries and alerts",
         "tags": [
           "budget"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/change-proposals": {
+      "get": {
+        "operationId": "list_change_proposals_api_v1_events__event_id__change_proposals_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by proposal status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by proposal status",
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ChangeProposalOut"
+                  },
+                  "title": "Response List Change Proposals Api V1 Events  Event Id  Change Proposals Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List change proposals for an event",
+        "tags": [
+          "adaptive"
+        ]
+      },
+      "post": {
+        "operationId": "create_change_proposal_api_v1_events__event_id__change_proposals_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeProposalCreate-Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Propose an adaptive planning change",
+        "tags": [
+          "adaptive"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/change-proposals/interpret": {
+      "post": {
+        "operationId": "interpret_change_request_api_v1_events__event_id__change_proposals_interpret_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InterpretRequestPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterpretedChangeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Interpret natural language change request",
+        "tags": [
+          "adaptive"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/change-proposals/{proposal_id}": {
+      "get": {
+        "operationId": "get_change_proposal_api_v1_events__event_id__change_proposals__proposal_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "proposal_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Proposal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get details of a change proposal",
+        "tags": [
+          "adaptive"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/change-proposals/{proposal_id}/accept": {
+      "post": {
+        "operationId": "accept_change_proposal_api_v1_events__event_id__change_proposals__proposal_id__accept_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "proposal_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Proposal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposalAcceptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Accept and atomically apply a change proposal (Owner only)",
+        "tags": [
+          "adaptive"
+        ]
+      }
+    },
+    "/api/v1/events/{event_id}/change-proposals/{proposal_id}/reject": {
+      "post": {
+        "operationId": "reject_change_proposal_api_v1_events__event_id__change_proposals__proposal_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "proposal_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Proposal Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposalRejectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeProposalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reject a change proposal",
+        "tags": [
+          "adaptive"
         ]
       }
     },
